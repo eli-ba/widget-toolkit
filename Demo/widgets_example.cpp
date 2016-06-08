@@ -11,7 +11,7 @@ class MyPainter : public akPainter
 		dstrect.y = rect.location.y;
 		dstrect.w = rect.size.width;
 		dstrect.h = rect.size.height;
-		SDL_FillRect(destination, &dstrect, SDL_MapRGB(destination->format, 0, 255, 0));
+		SDL_FillRect(destination, &dstrect, SDL_MapRGB(destination->format, 255, 128, 0));
 	}
 };
 
@@ -51,7 +51,7 @@ class AnotherPainter : public akPainter
 		dstrect.y = rect.location.y;
 		dstrect.w = rect.size.width;
 		dstrect.h = rect.size.height;
-		SDL_FillRect(destination, &dstrect, SDL_MapRGB(destination->format, 255, 0, 0));
+		SDL_FillRect(destination, &dstrect, SDL_MapRGB(destination->format, 0, 128, 128));
 	}
 };
 
@@ -106,13 +106,13 @@ int main(int argc, char **argv)
 		akWS_VISIBLE| akWS_CLOSABLE|akWS_MAXIMIZABLE|akWS_MINIMIZABLE);
 	
 	
-	akView *view1 = new akView(akRect(30,30,100,100));
+	akView *view1 = new akView(akRect(150,10,70,70));
 	view1->AddPainter(new MyPainter());
 	view1->AddMouseEventReceiver(new MyInputEventReceiver());
 	view1->SetTag(1);
 	wnd->AddView(view1);
 
-	akView *view2 = new akView(akRect(150, 60, 100, 100));
+	akView *view2 = new akView(akRect(250, 10, 70, 70));
 	view2->AddPainter(new AnotherPainter());
 	AnotherInputEventReceiver *view2receiver = new AnotherInputEventReceiver();
 	view2->AddMouseEventReceiver(view2receiver);
@@ -121,12 +121,12 @@ int main(int argc, char **argv)
 	wnd->AddView(view2);
 	
 
-	akPushButton *button1 = new akPushButton(akRect(30,30, 150, 35), "Button 1");
+	akPushButton *button1 = new akPushButton(akRect(30,30, 80, 35), "Button 1");
 	button1->AddActionReceiver(new Button1ActionReceiver());
 	wnd->AddView(button1);
 
 	wnd->AddView(new akLabel(akRect(10,100,150,25), "Full Name:"));
-	akTextBox *textbox1 = new akTextBox(akRect(75,100,150,25), "");
+	akTextBox *textbox1 = new akTextBox(akRect(75,100,200,25), "");
 	wnd->AddView(textbox1);
 
 	wnd->AddView(new akLabel(akRect(10,140,150,25), "E-mail:"));
