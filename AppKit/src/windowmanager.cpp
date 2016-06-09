@@ -13,21 +13,22 @@ WindowManager::WindowManager(akSize resolution, const string &name)
 {
 	mResolution = resolution;
 	mApplicationName = name;
+    mMouseMotion = akPoint(0, 0);
 
 	TTF_Init();
 	Resources::Load();
-
-	SDL_Init(SDL_INIT_VIDEO);
-	mScreen = SDL_SetVideoMode(mResolution.width, mResolution.height, 32, SDL_HWSURFACE);
-	if (!mScreen) {
-		exit(EXIT_FAILURE);
-	}
-	SDL_EnableUNICODE(1);
-	SDL_EnableKeyRepeat(500,30);
-	mDefaultBgColor = SDL_MapRGB(mScreen->format, 128, 128, 150);
-	SDL_FillRect(mScreen, NULL, mDefaultBgColor);
-	SDL_WM_SetCaption(name.c_str(), NULL);
-	SDL_Flip(mScreen);
+    
+    if (SDL_Init(SDL_INIT_VIDEO) == 0) {
+        _window = SDL_CreateWindow("appserver", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, mResolution.width, mResolution.height, SDL_WINDOW_SHOWN);
+        _renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+        SDL_SetRenderDrawBlendMode(_renderer, SDL_BLENDMODE_BLEND);
+    }
+    else {
+        exit(EXIT_FAILURE);
+    }
+    
+    SDL_SetRenderDrawColor(_renderer, 128, 128, 150, 255);
+    SDL_RenderClear(_renderer);
 
 	mWindowInteractions = new WindowInteractions(this);
 }
@@ -46,7 +47,8 @@ akInputEvent* WindowManager::ParseSDLEvent(SDL_Event *evt)
 	if (evt->type == SDL_KEYDOWN)
 	{
 		keyEvent = new akKeyEvent();
-		keyEvent->SetUnicode(evt->key.keysym.unicode);
+        // TODO
+		//keyEvent->SetUnicode(evt->key.keysym.unicode);
 		keyEvent->SetKeyEvent(akKEY_EVENT_PRESS);
 		keyEvent->SetWindow((akWindow*)(mWindowInteractions->GetTopLevelWindow()->Window));
 		return keyEvent;
@@ -54,11 +56,42 @@ akInputEvent* WindowManager::ParseSDLEvent(SDL_Event *evt)
 	else if (evt->type == SDL_KEYUP)
 	{
 		keyEvent = new akKeyEvent();
-		keyEvent->SetUnicode(evt->key.keysym.unicode);
+        // TODO
+		//keyEvent->SetUnicode(evt->key.keysym.unicode);
 		keyEvent->SetKeyEvent(akKEY_EVENT_RELEASE);
 		keyEvent->SetWindow((akWindow*)(mWindowInteractions->GetTopLevelWindow()->Window));
 		return keyEvent;
 	}
+    else if (evt->type == SDL_MOUSEWHEEL)
+    {
+        mouseEvent = new akMouseEvent();
+        
+        BaseWindow *wnd = mWindowInteractions->GetWindowThatContainsPoint(mMouseMotion);
+        if (!wnd) {
+            return NULL;
+        }
+        else {
+            mouseEvent->SetLocation(mMouseMotion);
+            mouseEvent->SetWindow((akWindow*)wnd->Window);
+            
+            /* Calculating the location in window */
+            akPoint locationInWindow;
+            locationInWindow.x = mMouseMotion.x - wnd->GetRect().location.x - wnd->GetLeftMargin();
+            locationInWindow.y = mMouseMotion.y - wnd->GetRect().location.y - wnd->GetTopMargin();
+            mouseEvent->SetLocationInWindow(locationInWindow);
+            
+            if (evt->wheel.y > 0) {
+                mouseEvent->SetMouseEvent(akMOUSE_EVENT_WHEEL_UP);
+            }
+            else {
+                mouseEvent->SetMouseEvent(akMOUSE_EVENT_WHEEL_DOWN);
+            }
+            
+            return mouseEvent;
+        }
+        
+        return NULL;
+    }
 	else if (evt->type == SDL_MOUSEBUTTONDOWN)
 	{
 		mouseButtonPressed = true;
@@ -80,20 +113,13 @@ akInputEvent* WindowManager::ParseSDLEvent(SDL_Event *evt)
 			locationInWindow.y = location.y - wnd->GetRect().location.y - wnd->GetTopMargin();
 			mouseEvent->SetLocationInWindow(locationInWindow);
 
-			if (evt->button.button == SDL_BUTTON_WHEELUP) {
-				mouseEvent->SetMouseEvent(akMOUSE_EVENT_WHEEL_UP);
-			}
-			else if (evt->button.button == SDL_BUTTON_WHEELDOWN) {
-				mouseEvent->SetMouseEvent(akMOUSE_EVENT_WHEEL_DOWN);
-			}
-			else {
-				mouseEvent->SetMouseEvent(akMOUSE_EVENT_PRESS);
-		
-				if (evt->button.button == SDL_BUTTON_LEFT)
-					mouseEvent->SetButton(akMOUSE_BUTTON_LEFT);
-				else if (evt->button.button == SDL_BUTTON_RIGHT)
-					mouseEvent->SetButton(akMOUSE_BUTTON_RIGHT);
-			}
+            mouseEvent->SetMouseEvent(akMOUSE_EVENT_PRESS);
+            
+            if (evt->button.button == SDL_BUTTON_LEFT)
+                mouseEvent->SetButton(akMOUSE_BUTTON_LEFT);
+            else if (evt->button.button == SDL_BUTTON_RIGHT)
+                mouseEvent->SetButton(akMOUSE_BUTTON_RIGHT);
+            
 			return mouseEvent;
 		}
 		return NULL;
@@ -133,6 +159,7 @@ akInputEvent* WindowManager::ParseSDLEvent(SDL_Event *evt)
 	{
 		mouseEvent = new akMouseEvent();
 		akPoint location = akPoint(evt->motion.x, evt->motion.y);
+        mMouseMotion = location;
 
 		BaseWindow *wnd = mWindowInteractions->GetWindowThatContainsPoint(location);
 		if (!wnd){ 
@@ -281,7 +308,9 @@ BaseWindow* WindowManager::RemoveWindow(BaseWindow *wnd)
 
 void WindowManager::ComposeWindows()
 {
-	SDL_FillRect(mScreen, NULL, mDefaultBgColor);
+    SDL_SetRenderDrawColor(_renderer, 65, 105, 170, 255);
+    SDL_RenderClear(_renderer);
+    
 	for (unsigned int i=0; i<mWindows.size(); i++) {
 		BaseWindow *wnd = mWindows.at(i);
 		if (wnd->IsVisible()) {
@@ -291,10 +320,14 @@ void WindowManager::ComposeWindows()
 			rect.y = wndRect.location.y;
 			rect.w = wndRect.size.width;
 			rect.h = wndRect.size.height;
-			SDL_BlitSurface(wnd->GetSurface(), NULL, mScreen, &rect);
+
+            SDL_Texture *tex = SDL_CreateTextureFromSurface(_renderer, wnd->GetSurface());
+            SDL_RenderCopy(_renderer, tex, NULL, &rect);
+            SDL_DestroyTexture(tex);
 		}
 	}
-	SDL_Flip(mScreen);
+	
+    SDL_RenderPresent(_renderer);
 }
 
 vector<BaseWindow*> WindowManager::GetWindows()
@@ -305,11 +338,6 @@ vector<BaseWindow*> WindowManager::GetWindows()
 akSize WindowManager::GetResolution()
 {
 	return mResolution;
-}
-
-SDL_PixelFormat* WindowManager::GetSDLPixelFormat()
-{
-	return mScreen->format;
 }
 
 WindowManager::~WindowManager()

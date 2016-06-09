@@ -51,8 +51,8 @@ void BaseWindow::CreateSurface()
 	if (mContentSurface)
 		SDL_FreeSurface(mContentSurface);
 
-	mSurface = SDL_CreateRGBSurface(SDL_HWSURFACE, mRect.size.width, mRect.size.height, 32, 0, 0, 0, 0);
-	mContentSurface = SDL_CreateRGBSurface(SDL_HWSURFACE, mContentRect.size.width, mContentRect.size.height, 32, 0, 0, 0, 0);
+	mSurface = SDL_CreateRGBSurface(0, mRect.size.width, mRect.size.height, 32, 0, 0, 0, 0);
+	mContentSurface = SDL_CreateRGBSurface(0, mContentRect.size.width, mContentRect.size.height, 32, 0, 0, 0, 0);
 }
 
 void BaseWindow::ParseStyle()

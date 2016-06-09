@@ -97,8 +97,8 @@ void akPushButton::Paint(akView *view, SDL_Surface *destination)
 	}
 
 	text = TTF_RenderText_Blended(default_app_font, title, black_color);
-	surf = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_HWACCEL, width, height, 32, 0, 0, 0, 0);
-	SDL_FillRect(surf, NULL, SDL_MapRGB(SDL_GetVideoSurface()->format, 0, 255, 0));
+	surf = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
+	SDL_FillRect(surf, NULL, SDL_MapRGB(surf->format, 0, 255, 0));
 
 	//Fill the whole surface
 	for (int i=0; i<surf->w; i++)

@@ -115,7 +115,7 @@ void akTextBox::ViewWillResignFirstResponder()
 void akTextBox::ViewWillBecameFirstResponder()
 {
 	akColor focusColor = GetFocusColor();
-	SDL_FillRect(mTextBox->bg, NULL, SDL_MapRGB(SDL_GetVideoSurface()->format, focusColor.r, focusColor.g, focusColor.b));
+	SDL_FillRect(mTextBox->bg, NULL, SDL_MapRGB(mTextBox->bg->format, focusColor.r, focusColor.g, focusColor.b));
 	TextBox_SetFocus(mTextBox);
 	GetWindow()->Repaint();
 }
@@ -174,30 +174,30 @@ void TextBox_DrawBorder(TextBox *textbox)
 	SDL_Rect p;
 	int i;
 
-	SDL_FillRect(textbox->bg, NULL, SDL_MapRGB(SDL_GetVideoSurface()->format, 255, 255, 255));
-	s = SDL_CreateRGBSurface(SDL_HWSURFACE,1,1,32,0,0,0,0);
-	SDL_FillRect(s,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 171, 173, 179));
+	SDL_FillRect(textbox->bg, NULL, SDL_MapRGB(textbox->bg->format, 255, 255, 255));
+	s = SDL_CreateRGBSurface(0,1,1,32,0,0,0,0);
+	SDL_FillRect(s,NULL,SDL_MapRGB(s->format, 171, 173, 179));
 	for (i=2;i<textbox->bg->w - 2;i++)
 	{
 		p.x = i;
 		p.y = 0;
 		SDL_BlitSurface(s,NULL,textbox->bg,&p);
 	}
-	SDL_FillRect(s,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 227, 233, 239));
+	SDL_FillRect(s,NULL,SDL_MapRGB(s->format, 227, 233, 239));
 	for (i=1;i<textbox->bg->w - 1;i++)
 	{
 		p.x = i;
 		p.y = textbox->bg->h-1;
 		SDL_BlitSurface(s,NULL,textbox->bg,&p);
 	}
-	SDL_FillRect(s,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 226, 227, 234));
+	SDL_FillRect(s,NULL,SDL_MapRGB(s->format, 226, 227, 234));
 	for (i=1;i<textbox->bg->h - 1;i++)
 	{
 		p.x = 0;
 		p.y = i;
 		SDL_BlitSurface(s,NULL,textbox->bg,&p);
 	}
-	SDL_FillRect(s,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 219, 223, 230));
+	SDL_FillRect(s,NULL,SDL_MapRGB(s->format, 219, 223, 230));
 	for (i=1;i<textbox->bg->h - 1;i++)
 	{
 		p.x = textbox->bg->w - 1;
@@ -206,50 +206,50 @@ void TextBox_DrawBorder(TextBox *textbox)
 	}
 	
 	// 1/4
-	SDL_FillRect(s,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 219, 223, 230));
+	SDL_FillRect(s,NULL,SDL_MapRGB(s->format, 219, 223, 230));
 	p.x = 0;
 	p.y = 0;
 	SDL_BlitSurface(s,NULL,textbox->bg,&p);
-	SDL_FillRect(s,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 187, 189, 194));
+	SDL_FillRect(s,NULL,SDL_MapRGB(s->format, 187, 189, 194));
 	p.x = 1;
 	p.y = 0;
 	SDL_BlitSurface(s,NULL,textbox->bg,&p);
-	SDL_FillRect(s,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 233, 236, 240));
+	SDL_FillRect(s,NULL,SDL_MapRGB(s->format, 233, 236, 240));
 	p.x = 1;
 	p.y = 1;
 	SDL_BlitSurface(s,NULL,textbox->bg,&p);
 
 	// 2/4
-	SDL_FillRect(s,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 235, 235, 238));
+	SDL_FillRect(s,NULL,SDL_MapRGB(s->format, 235, 235, 238));
 	p.x = 0;
 	p.y = textbox->bg->h - 1;
 	SDL_BlitSurface(s,NULL,textbox->bg,&p);
-	SDL_FillRect(s,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 233, 236, 240));
+	SDL_FillRect(s,NULL,SDL_MapRGB(s->format, 233, 236, 240));
 	p.x = 1;
 	p.y = textbox->bg->h - 2;
 	SDL_BlitSurface(s,NULL,textbox->bg,&p);
 
 	// 3/4
-	SDL_FillRect(s,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 187, 189, 194));
+	SDL_FillRect(s,NULL,SDL_MapRGB(s->format, 187, 189, 194));
 	
 	p.x = textbox->bg->w - 2;
 	p.y = 0;
 	SDL_BlitSurface(s,NULL,textbox->bg,&p);
-	SDL_FillRect(s,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 219, 223, 230));
+	SDL_FillRect(s,NULL,SDL_MapRGB(s->format, 219, 223, 230));
 	p.x = textbox->bg->w - 1;
 	p.y = 0;
 	SDL_BlitSurface(s,NULL,textbox->bg,&p);
-	SDL_FillRect(s,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 233, 236, 240));
+	SDL_FillRect(s,NULL,SDL_MapRGB(s->format, 233, 236, 240));
 	p.x = textbox->bg->w - 2;
 	p.y = 1;
 	SDL_BlitSurface(s,NULL,textbox->bg,&p);
 
 	// 4/4
-	SDL_FillRect(s,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 235, 235, 238));
+	SDL_FillRect(s,NULL,SDL_MapRGB(s->format, 235, 235, 238));
 	p.x = textbox->bg->w - 1;
 	p.y = textbox->bg->h - 1;
 	SDL_BlitSurface(s,NULL,textbox->bg,&p);
-	SDL_FillRect(s,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 233, 236, 240));
+	SDL_FillRect(s,NULL,SDL_MapRGB(s->format, 233, 236, 240));
 	p.x = textbox->bg->w - 2;
 	p.y = textbox->bg->h - 2;
 	SDL_BlitSurface(s,NULL,textbox->bg,&p);
@@ -275,9 +275,9 @@ TextBox * TextBox_Init(int x, int y, int width, int height, TTF_Font *font,
 	textbox->textSelectionBuffer = NULL;
 	textbox->bgColor = bgColor;
 	textbox->textColor = textColor;
-	textbox->destSurface = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_HWACCEL,width,height,32,0,0,0,0);
-	textbox->bg = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_HWACCEL,width+4,height+4,32,0,0,0,0);
-	SDL_FillRect(textbox->bg,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 255, 255, 255));
+	textbox->destSurface = SDL_CreateRGBSurface(0,width,height,32,0,0,0,0);
+	textbox->bg = SDL_CreateRGBSurface(0,width+4,height+4,32,0,0,0,0);
+	SDL_FillRect(textbox->bg,NULL,SDL_MapRGB(textbox->bg->format, 255, 255, 255));
 	
 	// WAS HERE
 	TextBox_DrawBorder(textbox);
@@ -295,10 +295,10 @@ TextBox * TextBox_Init(int x, int y, int width, int height, TTF_Font *font,
 	textbox->textBgPosition.y = y;
 	textbox->textPosition.x = textbox->textBgPosition.x;
 	textbox->textPosition.y = textbox->textBgPosition.y;
-	textbox->bgSurface = SDL_CreateRGBSurface(SDL_HWSURFACE, textbox->width, textbox->height, 32, 0, 0, 0, 0);
+	textbox->bgSurface = SDL_CreateRGBSurface(0, textbox->width, textbox->height, 32, 0, 0, 0, 0);
 	SDL_FillRect(textbox->bgSurface,NULL,SDL_MapRGB(textbox->destSurface->format, bgColor.r, bgColor.g, bgColor.b));
 	
-	textbox->cursorSurface = SDL_CreateRGBSurface(SDL_HWSURFACE, 1, textbox->height, 32, 0, 0, 0, 0);
+	textbox->cursorSurface = SDL_CreateRGBSurface(0, 1, textbox->height, 32, 0, 0, 0, 0);
 	SDL_FillRect(textbox->cursorSurface,NULL,SDL_MapRGB(textbox->destSurface->format, cursorColor.r, cursorColor.g, cursorColor.b));
 	
 	textbox->textSelectionBuffer = (char*)malloc(sizeof(char)*2);

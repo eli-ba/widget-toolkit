@@ -171,10 +171,10 @@ void akRadioButton::Paint(akView *view, SDL_Surface *destination)
 	}
 
 	text = TTF_RenderText_Blended(Resources::GetFontResource(DEFAULT_FONT), mText.c_str(), black_color);
-	SDL_SetColorKey(img, SDL_SRCCOLORKEY, SDL_MapRGB(img->format, 255, 0, 255));
-	surf = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_HWACCEL, width, height, 32, 0, 0, 0, 0);
+	//SDL_SetColorKey(img, SDL_SRCCOLORKEY, SDL_MapRGB(img->format, 255, 0, 255));
+	surf = SDL_CreateRGBSurface(0, width, height, 32, 0, 0, 0, 0);
 	akColor defaultBgColor = GetWindow()->GetBackgroundColor();
-	SDL_FillRect(surf, NULL, SDL_MapRGB(SDL_GetVideoSurface()->format,defaultBgColor.r,defaultBgColor.g,defaultBgColor.b));
+	SDL_FillRect(surf, NULL, SDL_MapRGB(surf->format,defaultBgColor.r,defaultBgColor.g,defaultBgColor.b));
 	z.y += (height / 2) - (img->h /2);
 	z.x += 2;
 	SDL_BlitSurface(img,NULL,surf,&z);

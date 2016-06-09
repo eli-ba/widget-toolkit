@@ -109,17 +109,17 @@ void akListBox::Paint(akView *view, SDL_Surface *destination)
 		l = listbox->height - (listbox->data[0]->h + listbox->data[2]->h);
 		if(listbox->nbScroll == 0)
 		{
-			scrollbar = SDL_CreateRGBSurface(SDL_HWSURFACE,listbox->data[0]->w - 2,1,32,0,0,0,0);
+			scrollbar = SDL_CreateRGBSurface(0,listbox->data[0]->w - 2,1,32,0,0,0,0);
 		}
 		else
 		{
 			if ((l / listbox->nbScroll) < 0)
 			{
-				scrollbar = SDL_CreateRGBSurface(SDL_HWSURFACE,listbox->data[0]->w - 2,1,32,0,0,0,0);
+				scrollbar = SDL_CreateRGBSurface(0,listbox->data[0]->w - 2,1,32,0,0,0,0);
 			}
 			else
 			{
-				scrollbar = SDL_CreateRGBSurface(SDL_HWSURFACE,listbox->data[0]->w - 2,l / listbox->nbScroll,32,0,0,0,0);
+				scrollbar = SDL_CreateRGBSurface(0,listbox->data[0]->w - 2,l / listbox->nbScroll,32,0,0,0,0);
 			}
 		}
 		
@@ -220,7 +220,7 @@ void akListBox::ViewWillResignFirstResponder()
 void akListBox::ViewWillBecameFirstResponder()
 {
 	akColor focusColor = GetFocusColor();
-	SDL_FillRect(mListBox->mbg, NULL, SDL_MapRGB(SDL_GetVideoSurface()->format, focusColor.r, focusColor.g, focusColor.b));
+	SDL_FillRect(mListBox->mbg, NULL, SDL_MapRGB(mListBox->mbg->format, focusColor.r, focusColor.g, focusColor.b));
 }
 
 /* ******************************************************
@@ -238,32 +238,32 @@ void ListBox_DrawBorder(ListBox *w)
 	SDL_Rect p;
 	int i;
 
-	w->mbg = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_HWACCEL,w->width+4,w->height+4,32,0,0,0,0);
-	SDL_FillRect(w->mbg,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 255, 255, 255));
+	w->mbg = SDL_CreateRGBSurface(0,w->width+4,w->height+4,32,0,0,0,0);
+	SDL_FillRect(w->mbg,NULL,SDL_MapRGB(w->mbg->format, 255, 255, 255));
 	
-	s = SDL_CreateRGBSurface(SDL_HWSURFACE,1,1,32,0,0,0,0);
-	SDL_FillRect(s,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 171, 173, 179));
+	s = SDL_CreateRGBSurface(0,1,1,32,0,0,0,0);
+	SDL_FillRect(s,NULL,SDL_MapRGB(s->format, 171, 173, 179));
 	for (i=2;i<w->mbg->w - 2;i++)
 	{
 		p.x = i;
 		p.y = 0;
 		SDL_BlitSurface(s,NULL,w->mbg,&p);
 	}
-	SDL_FillRect(s,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 227, 233, 239));
+	SDL_FillRect(s,NULL,SDL_MapRGB(s->format, 227, 233, 239));
 	for (i=1;i<w->mbg->w - 1;i++)
 	{
 		p.x = i;
 		p.y = w->mbg->h-1;
 		SDL_BlitSurface(s,NULL,w->mbg,&p);
 	}
-	SDL_FillRect(s,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 226, 227, 234));
+	SDL_FillRect(s,NULL,SDL_MapRGB(s->format, 226, 227, 234));
 	for (i=1;i<w->mbg->h - 1;i++)
 	{
 		p.x = 0;
 		p.y = i;
 		SDL_BlitSurface(s,NULL,w->mbg,&p);
 	}
-	SDL_FillRect(s,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 219, 223, 230));
+	SDL_FillRect(s,NULL,SDL_MapRGB(s->format, 219, 223, 230));
 	for (i=1;i<w->mbg->h - 1;i++)
 	{
 		p.x = w->mbg->w - 1;
@@ -272,50 +272,50 @@ void ListBox_DrawBorder(ListBox *w)
 	}
 	
 	// 1/4
-	SDL_FillRect(s,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 219, 223, 230));
+	SDL_FillRect(s,NULL,SDL_MapRGB(s->format, 219, 223, 230));
 	p.x = 0;
 	p.y = 0;
 	SDL_BlitSurface(s,NULL,w->mbg,&p);
-	SDL_FillRect(s,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 187, 189, 194));
+	SDL_FillRect(s,NULL,SDL_MapRGB(s->format, 187, 189, 194));
 	p.x = 1;
 	p.y = 0;
 	SDL_BlitSurface(s,NULL,w->mbg,&p);
-	SDL_FillRect(s,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 233, 236, 240));
+	SDL_FillRect(s,NULL,SDL_MapRGB(s->format, 233, 236, 240));
 	p.x = 1;
 	p.y = 1;
 	SDL_BlitSurface(s,NULL,w->mbg,&p);
 	
 	// 2/4
-	SDL_FillRect(s,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 235, 235, 238));
+	SDL_FillRect(s,NULL,SDL_MapRGB(s->format, 235, 235, 238));
 	p.x = 0;
 	p.y = w->mbg->h - 1;
 	SDL_BlitSurface(s,NULL,w->mbg,&p);
-	SDL_FillRect(s,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 233, 236, 240));
+	SDL_FillRect(s,NULL,SDL_MapRGB(s->format, 233, 236, 240));
 	p.x = 1;
 	p.y = w->mbg->h - 2;
 	SDL_BlitSurface(s,NULL,w->mbg,&p);
 	
 	// 3/4
-	SDL_FillRect(s,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 187, 189, 194));
+	SDL_FillRect(s,NULL,SDL_MapRGB(s->format, 187, 189, 194));
 	
 	p.x = w->mbg->w - 2;
 	p.y = 0;
 	SDL_BlitSurface(s,NULL,w->mbg,&p);
-	SDL_FillRect(s,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 219, 223, 230));
+	SDL_FillRect(s,NULL,SDL_MapRGB(s->format, 219, 223, 230));
 	p.x = w->mbg->w - 1;
 	p.y = 0;
 	SDL_BlitSurface(s,NULL,w->mbg,&p);
-	SDL_FillRect(s,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 233, 236, 240));
+	SDL_FillRect(s,NULL,SDL_MapRGB(s->format, 233, 236, 240));
 	p.x = w->mbg->w - 2;
 	p.y = 1;
 	SDL_BlitSurface(s,NULL,w->mbg,&p);
 	
 	// 4/4
-	SDL_FillRect(s,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 235, 235, 238));
+	SDL_FillRect(s,NULL,SDL_MapRGB(s->format, 235, 235, 238));
 	p.x = w->mbg->w - 1;
 	p.y = w->mbg->h - 1;
 	SDL_BlitSurface(s,NULL,w->mbg,&p);
-	SDL_FillRect(s,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 233, 236, 240));
+	SDL_FillRect(s,NULL,SDL_MapRGB(s->format, 233, 236, 240));
 	p.x = w->mbg->w - 2;
 	p.y = w->mbg->h - 2;
 	SDL_BlitSurface(s,NULL,w->mbg,&p);
@@ -327,7 +327,7 @@ ListBox * ListBox_Init(int x, int y, int width, int height,TTF_Font *font,int sc
 	ListBox *w;
 
 	w = (ListBox*)malloc(sizeof(ListBox));
-	w->akListBoxObject;
+	//w->akListBoxObject = NULL;
 	w->font = font;
 	w->x = x;
 	w->y = y; 
@@ -363,7 +363,7 @@ ListBox * ListBox_Init(int x, int y, int width, int height,TTF_Font *font,int sc
 	w->bgColor.r = bgColor.r;
 	w->bgColor.g = bgColor.g;
 	w->bgColor.b = bgColor.b;
-	SDL_FillRect(w->bg,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format,w->bgColor.r,w->bgColor.g,w->bgColor.b));
+	SDL_FillRect(w->bg,NULL,SDL_MapRGB(w->bg->format,w->bgColor.r,w->bgColor.g,w->bgColor.b));
 	w->selectionColor.r = selectionColor.r;
 	w->selectionColor.g = selectionColor.g;
 	w->selectionColor.b = selectionColor.b;
@@ -423,8 +423,8 @@ void ListBox_DrawContent(ListBox *listbox)
 	w = listbox->surface->w;
 	if(listbox->surface != NULL)
 		SDL_FreeSurface(listbox->surface);
-	listbox->surface = SDL_CreateRGBSurface(SDL_HWSURFACE | SDL_HWACCEL,w,s,32,0,0,0,0);
-	SDL_FillRect(listbox->surface,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format,listbox->bgColor.r,listbox->bgColor.g,listbox->bgColor.b));
+	listbox->surface = SDL_CreateRGBSurface(0,w,s,32,0,0,0,0);
+	SDL_FillRect(listbox->surface,NULL,SDL_MapRGB(listbox->surface->format,listbox->bgColor.r,listbox->bgColor.g,listbox->bgColor.b));
 
 	l = listbox->ItemList;
 	while(l != NULL)
@@ -509,17 +509,17 @@ void ListBox_Draw(ListBox *listbox)
 		l = listbox->height - (listbox->data[0]->h + listbox->data[2]->h);
 		if(listbox->nbScroll == 0)
 		{
-			scrollbar = SDL_CreateRGBSurface(SDL_HWSURFACE,listbox->data[0]->w - 2,1,32,0,0,0,0);
+			scrollbar = SDL_CreateRGBSurface(0,listbox->data[0]->w - 2,1,32,0,0,0,0);
 		}
 		else
 		{
 			if ((l / listbox->nbScroll) < 0)
 			{
-				scrollbar = SDL_CreateRGBSurface(SDL_HWSURFACE,listbox->data[0]->w - 2,1,32,0,0,0,0);
+				scrollbar = SDL_CreateRGBSurface(0,listbox->data[0]->w - 2,1,32,0,0,0,0);
 			}
 			else
 			{
-				scrollbar = SDL_CreateRGBSurface(SDL_HWSURFACE,listbox->data[0]->w - 2,l / listbox->nbScroll,32,0,0,0,0);
+				scrollbar = SDL_CreateRGBSurface(0,listbox->data[0]->w - 2,l / listbox->nbScroll,32,0,0,0,0);
 			}
 		}
 
@@ -601,17 +601,17 @@ void __ListBox_Draw(ListBox *listbox, int updateWnd)
 		l = listbox->height - (listbox->data[0]->h + listbox->data[2]->h);
 		if(listbox->nbScroll == 0)
 		{
-			scrollbar = SDL_CreateRGBSurface(SDL_HWSURFACE,listbox->data[0]->w - 2,1,32,0,0,0,0);
+			scrollbar = SDL_CreateRGBSurface(0,listbox->data[0]->w - 2,1,32,0,0,0,0);
 		}
 		else
 		{
 			if ((l / listbox->nbScroll) < 0)
 			{
-				scrollbar = SDL_CreateRGBSurface(SDL_HWSURFACE,listbox->data[0]->w - 2,1,32,0,0,0,0);
+				scrollbar = SDL_CreateRGBSurface(0,listbox->data[0]->w - 2,1,32,0,0,0,0);
 			}
 			else
 			{
-				scrollbar = SDL_CreateRGBSurface(SDL_HWSURFACE,listbox->data[0]->w - 2,l / listbox->nbScroll,32,0,0,0,0);
+				scrollbar = SDL_CreateRGBSurface(0,listbox->data[0]->w - 2,l / listbox->nbScroll,32,0,0,0,0);
 			}
 		}
 		
@@ -662,11 +662,11 @@ void ListBox_AddItem(ListBox *listbox, const char *itemtext)
 	p->info.select = 0;
 	strcpy(p->info.text,itemtext);
 	p->info.textsurf = TTF_RenderText_Blended(listbox->font,itemtext,black);
-	p->info.surface = SDL_CreateRGBSurface(SDL_HWSURFACE,listbox->width,p->info.textsurf->h,32,0,0,0,0);
-	SDL_FillRect(p->info.surface,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format,255,255,255));
+	p->info.surface = SDL_CreateRGBSurface(0,listbox->width,p->info.textsurf->h,32,0,0,0,0);
+	SDL_FillRect(p->info.surface,NULL,SDL_MapRGB(p->info.surface->format,255,255,255));
 	p->info.surface_selected = SDL_CreateRGBSurface(SDL_SWSURFACE,listbox->width,p->info.surface->h,32,0,0,0,0);
 	SDL_FillRect(p->info.surface_selected,NULL,
-		SDL_MapRGB(SDL_GetVideoSurface()->format,listbox->selectionColor.r,listbox->selectionColor.g,listbox->selectionColor.b));
+		SDL_MapRGB(p->info.surface_selected->format,listbox->selectionColor.r,listbox->selectionColor.g,listbox->selectionColor.b));
 	buffer = TTF_RenderText_Blended(listbox->font,itemtext,white);
 	position.x = 0;
 	position.y = 0;
@@ -1143,7 +1143,7 @@ void ListBox_OnNoEvent(ListBox *listbox, int mouse_x, int mouse_y)
 				listbox->tik = 0;
 				listbox->stop = 1;
 				ListBox_ScrollDown(listbox);
-				SDL_Flip(SDL_GetVideoSurface());
+				//SDL_Flip(SDL_GetVideoSurface());
 				SDL_Delay(50);
 			}
 		}
@@ -1161,7 +1161,7 @@ void ListBox_OnNoEvent(ListBox *listbox, int mouse_x, int mouse_y)
 				listbox->tik = 0;
 				listbox->stop = 1;
 				ListBox_ScrollUp(listbox);
-				SDL_Flip(SDL_GetVideoSurface());
+				//SDL_Flip(SDL_GetVideoSurface());
 				SDL_Delay(50);
 			}
 		}
@@ -1204,7 +1204,7 @@ void ListBox_SetItem(ListBox *listbox, int index, char *text)
 		p->info.surface = TTF_RenderText_Blended(listbox->font,text,black);
 		p->info.surface_selected = SDL_CreateRGBSurface(SDL_SWSURFACE,listbox->width,p->info.surface->h,32,0,0,0,0);
 		SDL_FillRect(p->info.surface_selected,NULL,
-			SDL_MapRGB(SDL_GetVideoSurface()->format,listbox->selectionColor.r,listbox->selectionColor.g,listbox->selectionColor.b));
+			SDL_MapRGB(p->info.surface_selected->format,listbox->selectionColor.r,listbox->selectionColor.g,listbox->selectionColor.b));
 		buffer = TTF_RenderText_Blended(listbox->font,text,white);
 		position.x = 0;
 		position.y = 0;

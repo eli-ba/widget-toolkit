@@ -44,7 +44,7 @@ class akListBox;
 typedef struct ListBox ListBox;
 struct ListBox
 {
-	akListBox *akListBoxObject;
+	//akListBox *akListBoxObject;
 	int x;
 	int y;
 	int width;

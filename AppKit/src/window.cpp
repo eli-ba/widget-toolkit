@@ -33,7 +33,7 @@ void akWindow::Repaint()
 
 void akWindow::Paint(akView *view, SDL_Surface *destination)
 {
-	SDL_FillRect(destination, NULL, SDL_MapRGB(TheWindowManager->GetSDLPixelFormat(), mBgColor.r, mBgColor.g, mBgColor.b));
+	SDL_FillRect(destination, NULL, SDL_MapRGB(destination->format, mBgColor.r, mBgColor.g, mBgColor.b));
 }
 
 void akWindow::DispatchInputEvent(akInputEvent *evt)

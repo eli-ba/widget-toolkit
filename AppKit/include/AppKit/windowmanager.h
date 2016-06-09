@@ -25,19 +25,20 @@ public:
 	void Close();
 	vector<BaseWindow*> GetWindows();
 	akSize GetResolution();
-	SDL_PixelFormat* GetSDLPixelFormat();
 	~WindowManager();
 private:
 	akInputEvent* ParseSDLEvent(SDL_Event *evt);
 	
 private:
-	SDL_Surface *mScreen;
+	//SDL_Surface *mScreen;
 	akSize mResolution;
 	vector<BaseWindow*> mWindows;
 	WindowInteractions *mWindowInteractions;
-	Uint32 mDefaultBgColor;
 	string mApplicationName;
 	bool mRunning;
+    SDL_Window *_window = nullptr;
+    SDL_Renderer *_renderer = nullptr;
+    akPoint mMouseMotion;
 };
 
 #endif
