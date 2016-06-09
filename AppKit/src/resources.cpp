@@ -96,7 +96,7 @@ void Resources::LoadImageResources()
 			sprintf_s(msg, strlen(msg), "Unable to load image resource %d", i);
 			MessageBox(NULL, msg, "Error", MB_OK);
 #else
-			printf("Unable to load image resource %d", i);
+			printf("Unable to load image resource %d\n", i);
 #endif
 			error = true;
 		}
@@ -121,7 +121,7 @@ void Resources::LoadFontResources()
 			sprintf_s(msg, strlen(msg), "Unable to load font resource %d", i);
 			MessageBox(NULL, msg, "Error", MB_OK);
 #else
-			printf("Unable to load font resource %d", i);
+			printf("Unable to load font resource %d\n", i);
 #endif
 			error = true;
 		}

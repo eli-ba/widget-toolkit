@@ -11,7 +11,7 @@ set (SOURCES
     ${INC_DIR}/actionreceiver.h
     ${INC_DIR}/aktypes.h
     ${INC_DIR}/appkit_export.h
-    ${INC_DIR}/AppKit.h
+    ${INC_DIR}/ak.h
     ${INC_DIR}/application.h
     ${INC_DIR}/basewindow.h
     ${INC_DIR}/constants.h

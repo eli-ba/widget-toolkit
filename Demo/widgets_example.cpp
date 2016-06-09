@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include <AppKit/AppKit.h>
+#include <AppKit/ak.h>
 #include <iostream>
 
 class MyPainter : public akPainter

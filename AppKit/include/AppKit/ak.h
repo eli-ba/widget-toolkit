@@ -1,4 +1,4 @@
-#ifndef _APPKIT_H_
+#ifndef _APPKIT_H
 #define _APPKIT_H
 
 #include <AppKit/constants.h>
