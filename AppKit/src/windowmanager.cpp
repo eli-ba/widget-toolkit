@@ -47,8 +47,9 @@ akInputEvent* WindowManager::ParseSDLEvent(SDL_Event *evt)
 	if (evt->type == SDL_KEYDOWN)
 	{
 		keyEvent = new akKeyEvent();
-        // TODO
-		//keyEvent->SetUnicode(evt->key.keysym.unicode);
+        keyEvent->SetKeycode(evt->key.keysym.sym);
+        keyEvent->SetKeymod(evt->key.keysym.mod);
+        keyEvent->SetScancode(evt->key.keysym.scancode);
 		keyEvent->SetKeyEvent(akKEY_EVENT_PRESS);
 		keyEvent->SetWindow((akWindow*)(mWindowInteractions->GetTopLevelWindow()->Window));
 		return keyEvent;
@@ -56,12 +57,21 @@ akInputEvent* WindowManager::ParseSDLEvent(SDL_Event *evt)
 	else if (evt->type == SDL_KEYUP)
 	{
 		keyEvent = new akKeyEvent();
-        // TODO
-		//keyEvent->SetUnicode(evt->key.keysym.unicode);
+        keyEvent->SetKeycode(evt->key.keysym.sym);
+        keyEvent->SetKeymod(evt->key.keysym.mod);
+        keyEvent->SetScancode(evt->key.keysym.scancode);
 		keyEvent->SetKeyEvent(akKEY_EVENT_RELEASE);
 		keyEvent->SetWindow((akWindow*)(mWindowInteractions->GetTopLevelWindow()->Window));
 		return keyEvent;
 	}
+    else if (evt->type == SDL_TEXTINPUT)
+    {
+        keyEvent = new akKeyEvent();
+        keyEvent->SetKeyEvent(akKEY_EVENT_TEXT);
+        keyEvent->SetText(evt->text.text);
+        keyEvent->SetWindow((akWindow*)(mWindowInteractions->GetTopLevelWindow()->Window));
+        return keyEvent;
+    }
     else if (evt->type == SDL_MOUSEWHEEL)
     {
         mouseEvent = new akMouseEvent();

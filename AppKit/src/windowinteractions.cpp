@@ -22,7 +22,6 @@ void WindowInteractions::OnInputEvent(akInputEvent *evt)
 	static akPoint cursorDifference;
 	static bool mustRecalculateCursorDifference = true;
 	akMouseEvent *mouseEvent = NULL;
-	akKeyEvent *keyEvent = NULL;
 
 	if (evt->GetType() == akINPUT_EVENT_MOUSE)
 	{

@@ -48,6 +48,7 @@ private:
 	/* akKeyEventReceiver overrides */
 	virtual void KeyPress(akView* sender, akKeyEvent *event);
     virtual void KeyRelease(akView* sender, akKeyEvent *event);
+    virtual void TextInput(akView* sender, akKeyEvent *event);
 	/* akPainter overrides */
 	virtual void Paint(akView *view, SDL_Surface *destination);
 private:

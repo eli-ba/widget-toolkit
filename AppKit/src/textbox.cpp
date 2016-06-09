@@ -43,9 +43,15 @@ void akTextBox::SetText(string text)
 void akTextBox::KeyPress(akView* sender, akKeyEvent *event)
 {
 	this->InvokeActionReceivers(this);
-	SDL_Event *sdlEvent = (SDL_Event*)event->Reserved;
-	TextBox_OnKeyDown(mTextBox, event->GetUnicode(), sdlEvent->key.keysym.sym);
+	TextBox_OnKeyDown(mTextBox, event->GetScancode(), event->GetKeycode(), event->GetKeymod());
 	GetWindow()->Repaint();
+}
+
+void akTextBox::TextInput(akView* sender, akKeyEvent *event)
+{
+    this->InvokeActionReceivers(this);
+    TextBox_OnTextInput(mTextBox, event->GetText());
+    GetWindow()->Repaint();
 }
 
 void akTextBox::KeyRelease(akView* sender, akKeyEvent *event)
@@ -90,7 +96,6 @@ void akTextBox::MouseWheelDown(akView *sender, akMouseEvent *event)
 void akTextBox::Paint(akView *view, SDL_Surface *destination)
 {
 	SDL_Rect p;
-	SDL_Surface *rectLine=NULL;
 	p.x = 0;
 	p.y = 0;
 	SDL_BlitSurface(mTextBox->bgSurface,NULL,mTextBox->destSurface,&p);
@@ -260,7 +265,6 @@ TextBox * TextBox_Init(int x, int y, int width, int height, TTF_Font *font,
 {
 	TextBox *textbox;
 	SDL_Color black={0,0,0};
-	int i;
 
 	textbox = (TextBox*)malloc(sizeof(TextBox));
 	textbox->font = font;
@@ -312,8 +316,8 @@ TextBox * TextBox_Init(int x, int y, int width, int height, TTF_Font *font,
 void TextBox_Draw(TextBox *textbox)
 {
 	SDL_Rect p;
-	SDL_Surface *rectLine=NULL;
-	/*rectLine = SDL_CreateRGBSurface(SDL_HWSURFACE,textbox->width+2,textbox->height+2,32,0,0,0,0);
+	/*SDL_Surface *rectLine=NULL;
+	rectLine = SDL_CreateRGBSurface(SDL_HWSURFACE,textbox->width+2,textbox->height+2,32,0,0,0,0);
 	SDL_FillRect(rectLine,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 127, 157, 185));
 	SDL_BlitSurface(rectLine)*/
 	p.x = 0;
@@ -329,8 +333,8 @@ void TextBox_Draw(TextBox *textbox)
 void __TextBox_Draw(TextBox *textbox, int updateWnd)
 {
 	SDL_Rect p;
-	SDL_Surface *rectLine=NULL;
-	/*rectLine = SDL_CreateRGBSurface(SDL_HWSURFACE,textbox->width+2,textbox->height+2,32,0,0,0,0);
+	/*SDL_Surface *rectLine=NULL;
+	rectLine = SDL_CreateRGBSurface(SDL_HWSURFACE,textbox->width+2,textbox->height+2,32,0,0,0,0);
 	SDL_FillRect(rectLine,NULL,SDL_MapRGB(SDL_GetVideoSurface()->format, 127, 157, 185));
 	SDL_BlitSurface(rectLine)*/
 	p.x = 0;
@@ -346,7 +350,7 @@ void __TextBox_Draw(TextBox *textbox, int updateWnd)
 int TextBox_OnMouseButtonDown(TextBox *textbox, int mouse_x, int mouse_y)
 {
 	SDL_Surface *schar, *schar1,*schar2;
-	int i=0, j=0, test=0, test1=0,dontDeleteChar=0;
+	int i=0, j=0, test1=0;
 	int end1;
 	char *text2=NULL,*text3=NULL;
 	SDL_Rect p={0,0,0,0};
@@ -467,8 +471,7 @@ int TextBox_OnMouseButtonDown(TextBox *textbox, int mouse_x, int mouse_y)
 void TextBox_DeleteChar(TextBox *textbox, unsigned int unicode, int sym)
 {
 	SDL_Surface *schar=NULL;
-	int i=0, j=0, test=0, test1=0,dontDeleteChar=0;
-	char *text2=NULL,*text3=NULL;
+	int i=0, j=0, test=0,dontDeleteChar=0;
 	SDL_Rect p;
 
 	if(textbox->count > 1)
@@ -682,8 +685,7 @@ void TextBox_DeleteChar(TextBox *textbox, unsigned int unicode, int sym)
 void TextBox_WriteChar(TextBox *textbox, unsigned int unicode, int sym)
 {
 	SDL_Surface *schar=NULL;
-	int i=0, j=0, test=0, test1=0,dontDeleteChar=0;
-	char *text2=NULL,*text3=NULL;
+    int i=0;
 	SDL_Rect p;
 
 	textbox->count++;
@@ -741,8 +743,7 @@ void TextBox_WriteChar(TextBox *textbox, unsigned int unicode, int sym)
 void TextBox_MoveCursorRight(TextBox *textbox, unsigned int unicode, int sym)
 {
 	SDL_Surface *schar=NULL;
-	int i=0, j=0, test=0, test1=0,dontDeleteChar=0;
-	char *text2=NULL,*text3=NULL;
+	int i=0;
 	SDL_Rect p;
 
 	if(strlen(textbox->text) >= 1)
@@ -797,8 +798,7 @@ void TextBox_MoveCursorRight(TextBox *textbox, unsigned int unicode, int sym)
 void TextBox_MoveCursorLeft(TextBox *textbox, unsigned int unicode, int sym)
 {
 	SDL_Surface *schar=NULL;
-	int i=0, j=0, test=0, test1=0,dontDeleteChar=0;
-	char *text2=NULL,*text3=NULL;
+	int i=0, test=0;
 	SDL_Rect p;
 
 	if(strlen(textbox->text) >= 1)
@@ -853,39 +853,44 @@ void TextBox_MoveCursorLeft(TextBox *textbox, unsigned int unicode, int sym)
 	}
 }
 
-void TextBox_OnKeyDown(TextBox *textbox, unsigned int unicode, int sym)
+void TextBox_OnTextInput(TextBox *textbox, std::string text)
+{
+    SDL_Surface *schar=NULL;
+    
+    if(!textbox->focus)
+        return;
+    
+    TextBox_WriteChar(textbox,text.at(0),0);
+    
+    if(schar != NULL)
+        SDL_FreeSurface(schar);
+}
+
+void TextBox_OnKeyDown(TextBox *textbox, int32_t _scancode, int32_t _keycode, int32_t _keymod)
 {
 	SDL_Surface *schar=NULL;
-	int i=0, j=0, test=0, test1=0,dontDeleteChar=0;
-	char *text2=NULL,*text3=NULL;
 
 	if(!textbox->focus)
 		return;
 
-	if(unicode == 8) // Backspace
+	if(_keycode == SDLK_BACKSPACE) // Backspace
 	{
-		TextBox_DeleteChar(textbox,unicode,sym);
-		/* To be updated */
-		//MDDrawSurface(textbox->destSurface,textbox->destWindow,textbox->x,textbox->y,1);
-	}
-	else if(unicode > 30) // Writable characteres
-	{
-		TextBox_WriteChar(textbox,unicode,sym);
-		/* To be updated */
+		TextBox_DeleteChar(textbox,0,0);
+		// To be updated
 		//MDDrawSurface(textbox->destSurface,textbox->destWindow,textbox->x,textbox->y,1);
 	}
 
-	switch(sym)
+	switch(_keycode)
 	{
 	case SDLK_RIGHT:
-		TextBox_MoveCursorRight(textbox,unicode,sym);
-		/* To be updated */
+		TextBox_MoveCursorRight(textbox,0,0);
+		// To be updated
 		//MDDrawSurface(textbox->destSurface,textbox->destWindow,textbox->x,textbox->y,1);
 		break;
 
 	case SDLK_LEFT:
-		TextBox_MoveCursorLeft(textbox,unicode,sym);
-		/* To be updated */
+		TextBox_MoveCursorLeft(textbox,0,0);
+		// To be updated
 		//MDDrawSurface(textbox->destSurface,textbox->destWindow,textbox->x,textbox->y,1);
 		break;
 	}
@@ -901,14 +906,11 @@ void TextBox_AppendText(TextBox *textbox, char *text)
 	l = strlen(textbox->text);
 	for (i=0; i<l; i++)
 	{
-		TextBox_OnKeyDown(textbox,0,SDLK_RIGHT);
+        TextBox_OnKeyDown(textbox, SDL_SCANCODE_RIGHT, SDLK_RIGHT, 0);
 	}
 	if (text != NULL)
 	{
-		for(unsigned i=0; i<strlen(text); i++)
-		{
-			TextBox_OnKeyDown(textbox,text[i],-1);
-		}
+        TextBox_OnTextInput(textbox, text);
 	}
 }
 
@@ -950,11 +952,11 @@ void TextBox_SetCursor(TextBox *textbox, int index)
 	l = strlen(textbox->text);
 	for (i=0; i<l; i++)
 	{
-		TextBox_OnKeyDown(textbox,0,SDLK_LEFT);
+        TextBox_OnKeyDown(textbox, SDL_SCANCODE_LEFT, SDLK_LEFT, 0);
 	}
 
 	for (i=0; i<index; i++)
 	{
-		TextBox_OnKeyDown(textbox,0,SDLK_RIGHT);
+        TextBox_OnKeyDown(textbox, SDL_SCANCODE_RIGHT, SDLK_RIGHT, 0);
 	}
 }

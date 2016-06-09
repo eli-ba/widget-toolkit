@@ -210,6 +210,7 @@ void akView::InvokeKeyEventReceivers(akKeyEvent *event)
 		akKeyEventReceiver *rcv = mKeyEventReceivers.at(i);
 		if (event->GetKeyEvent() == akKEY_EVENT_PRESS) rcv->KeyPress(this, event);
 		else if (event->GetKeyEvent() == akKEY_EVENT_RELEASE) rcv->KeyRelease(this, event);
+        else if (event->GetKeyEvent() == akKEY_EVENT_TEXT) rcv->TextInput(this, event);
 	}
 }
 

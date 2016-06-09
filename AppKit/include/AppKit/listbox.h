@@ -140,6 +140,7 @@ private:
 	/* akKeyEventEventReceiver overrides */
 	virtual void KeyPress(akView* sender, akKeyEvent *event);
     virtual void KeyRelease(akView* sender, akKeyEvent *event);
+    virtual void TextInput(akView* sender, akKeyEvent *event);
 	/* akViewNotificationReceiver overrides */
 	virtual void ViewWillResignFirstResponder();
 	virtual void ViewWillBecameFirstResponder();

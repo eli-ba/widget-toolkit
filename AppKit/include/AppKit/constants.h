@@ -24,5 +24,6 @@
 
 #define akKEY_EVENT_PRESS	1
 #define akKEY_EVENT_RELEASE	2
+#define akKEY_EVENT_TEXT	3
 
 #endif

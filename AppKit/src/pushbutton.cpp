@@ -66,8 +66,7 @@ void akPushButton::MouseWheelDown(akView *sender, akMouseEvent *event)
 void akPushButton::Paint(akView *view, SDL_Surface *destination)
 {
 	SDL_Color black_color = {0,0,0};
-	SDL_Surface *surf = NULL,*text=NULL, *nw=NULL, *ne=NULL, 
-		*sw=NULL, *se=NULL, *n=NULL, *s=NULL ,*w=NULL, *e=NULL, *img=NULL;
+	SDL_Surface *surf = NULL,*text=NULL,*img=NULL;
 	SDL_Surface *pushbutton_normal = Resources::GetImageResource(PUSHBUTTON_NORMAL);
 	SDL_Surface *pushbutton_pressed = Resources::GetImageResource(PUSHBUTTON_PRESSED);
 	
@@ -80,7 +79,7 @@ void akPushButton::Paint(akView *view, SDL_Surface *destination)
 	TTF_Font *default_app_font = Resources::GetFontResource(DEFAULT_FONT);
 	const char *title = mText.c_str();
 	
-	SDL_Rect p = {x,y}, pt = {x + 5, y + 5}, z={0,0};
+	SDL_Rect p = {x,y}, pt = {x + 5, y + 5};
 
 	switch(mButtonState)
 	{
@@ -143,7 +142,6 @@ void akPushButton::Paint(akView *view, SDL_Surface *destination)
 	}
 
 	//MDDrawSurface(text,dest_wnd,pt.x,pt.y,1);
-	dstrect;
 	dstrect.x = pt.x;
 	dstrect.y = pt.y;
 	SDL_BlitSurface(text, NULL, destination, &dstrect);

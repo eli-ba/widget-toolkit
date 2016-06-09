@@ -206,9 +206,12 @@ void akListBox::KeyPress(akView* sender, akKeyEvent *event)
 
 void akListBox::KeyRelease(akView* sender, akKeyEvent *event)
 {
-	SDL_Event *sdlEvent = (SDL_Event*)event->Reserved;
 	ListBox_OnKeyUp(mListBox);
 	GetWindow()->Repaint();
+}
+
+void akListBox::TextInput(akView* sender, akKeyEvent *event)
+{
 }
 
 /* akViewNotification receiver overrides */

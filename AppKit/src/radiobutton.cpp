@@ -135,6 +135,10 @@ void akRadioButton::KeyRelease(akView* sender, akKeyEvent *event)
 {
 }
 
+void akRadioButton::TextInput(akView* sender, akKeyEvent *event)
+{
+}
+
 /* akPainter overrides */
 void akRadioButton::Paint(akView *view, SDL_Surface *destination)
 {

@@ -74,11 +74,15 @@ class AnotherInputEventReceiver : public akMouseEventReceiver, public akKeyEvent
 	}
 
 	virtual void KeyPress(akView* sender, akKeyEvent *event) {
-		printf("(AnotherView)KeyPress '%c'\n", event->GetUnicode());
+		printf("(AnotherView)KeyPress '%d'\n", event->GetKeycode());
 	}
+    
+    virtual void TextInput(akView* sender, akKeyEvent *event) {
+        printf("(AnotherView)TextInput '%s'\n", event->GetText().c_str());
+    }
 
     virtual void KeyRelease(akView* sender, akKeyEvent *event) {
-		printf("(AnotherView)KeyRelease '%c'\n", event->GetUnicode());
+		printf("(AnotherView)KeyRelease '%d'\n", event->GetKeycode());
 	}
 
 	virtual void MouseWheelUp(akView* sender, akMouseEvent *event) {

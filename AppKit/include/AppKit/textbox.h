@@ -40,7 +40,8 @@ void TextBox_Draw(TextBox *textbox);
 void __TextBox_Draw(TextBox *textbox, int updateWnd);
 void TextBox_DrawBorder(TextBox *textbox);
 int TextBox_OnMouseButtonDown(TextBox *textbox, int mouse_x, int mouse_y);
-void TextBox_OnKeyDown(TextBox *textbox, unsigned int unicode, int sym);
+void TextBox_OnKeyDown(TextBox *textbox, int32_t _scancode, int32_t _keycode, int32_t _keymod);
+void TextBox_OnTextInput(TextBox *textbox, std::string text);
 void TextBox_AppendText(TextBox *textbox, char *text);
 void TextBox_SetText(TextBox *textbox, char *text);
 char *TextBox_GetText(TextBox *textbox);
@@ -61,6 +62,7 @@ public:
 private:
 	virtual void KeyPress(akView* sender, akKeyEvent *event);
     virtual void KeyRelease(akView* sender, akKeyEvent *event);
+    virtual void TextInput(akView* sender, akKeyEvent *event);
 	virtual void MousePress(akView* sender, akMouseEvent *event);
     virtual void MouseRelease(akView* sender, akMouseEvent *event);
     virtual void MouseMove(akView* sender, akMouseEvent *event);
