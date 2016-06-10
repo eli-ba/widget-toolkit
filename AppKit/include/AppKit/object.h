@@ -6,14 +6,14 @@
 
 using namespace std;
 
-class APPKIT_API akObject
-{
+class APPKIT_API akObject {
 public:
-	akObject();
-	void SetClassName(string className);
-	string GetClassName();
+    akObject();
+    void SetClassName(string className);
+    string GetClassName();
+
 private:
-	string mClassName;
+    string mClassName;
 };
 
 #endif

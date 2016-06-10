@@ -6,15 +6,15 @@
 #include <AppKit/actionreceiver.h>
 #include <vector>
 
-class APPKIT_API akControl : public akView
-{
+class APPKIT_API akControl : public akView {
 public:
-	akControl(akRect rect, akView *parent = NULL);
-	void AddActionReceiver(akActionReceiver *receiver);
-	void RemoveActionReceiver(akActionReceiver *receiver);
-	void InvokeActionReceivers(akControl *sender);
+    akControl(akRect rect, akView* parent = NULL);
+    void AddActionReceiver(akActionReceiver* receiver);
+    void RemoveActionReceiver(akActionReceiver* receiver);
+    void InvokeActionReceivers(akControl* sender);
+
 private:
-	vector<akActionReceiver*> mActionReceivers;
+    vector<akActionReceiver*> mActionReceivers;
 };
 
 #endif

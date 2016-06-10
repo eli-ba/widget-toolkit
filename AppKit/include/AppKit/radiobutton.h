@@ -17,44 +17,45 @@ using namespace std;
 
 class akRadioButton;
 
-class APPKIT_API akRadioButtonGroup : public akObject
-{
+class APPKIT_API akRadioButtonGroup : public akObject {
 public:
-	akRadioButtonGroup();
-	void Add(akRadioButton *radioButton);
-	void Remove(akRadioButton *radioButton);
-	vector<akRadioButton*> GetButtons();
+    akRadioButtonGroup();
+    void Add(akRadioButton* radioButton);
+    void Remove(akRadioButton* radioButton);
+    vector<akRadioButton*> GetButtons();
+
 private:
-	vector<akRadioButton*> mButtons;
+    vector<akRadioButton*> mButtons;
 };
 
-class APPKIT_API akRadioButton : public akControl, akPainter, akMouseEventReceiver, akKeyEventReceiver
-{
+class APPKIT_API akRadioButton : public akControl, akPainter, akMouseEventReceiver, akKeyEventReceiver {
 public:
-	akRadioButton(akRect rect, string text, akView *parent = NULL);
-	void SetText(string text);
-	string GetText();
-	void SetSelected(bool selected);
-	bool IsSelected();
-	void SetGroup(akRadioButtonGroup *group);
+    akRadioButton(akRect rect, string text, akView* parent = NULL);
+    void SetText(string text);
+    string GetText();
+    void SetSelected(bool selected);
+    bool IsSelected();
+    void SetGroup(akRadioButtonGroup* group);
+
 private:
-	/* akMouseEventReceiver overrides */
-	virtual void MousePress(akView* sender, akMouseEvent *event);
-    virtual void MouseRelease(akView* sender, akMouseEvent *event);
-    virtual void MouseMove(akView* sender, akMouseEvent *event);
-    virtual void MouseDrag(akView* sender, akMouseEvent *event);
-	virtual void MouseWheelUp(akView *sender, akMouseEvent *event);
-	virtual void MouseWheelDown(akView *sender, akMouseEvent *event);
-	/* akKeyEventReceiver overrides */
-	virtual void KeyPress(akView* sender, akKeyEvent *event);
-    virtual void KeyRelease(akView* sender, akKeyEvent *event);
-    virtual void TextInput(akView* sender, akKeyEvent *event);
-	/* akPainter overrides */
-	virtual void Paint(akView *view, SDL_Surface *destination);
+    /* akMouseEventReceiver overrides */
+    virtual void MousePress(akView* sender, akMouseEvent* event);
+    virtual void MouseRelease(akView* sender, akMouseEvent* event);
+    virtual void MouseMove(akView* sender, akMouseEvent* event);
+    virtual void MouseDrag(akView* sender, akMouseEvent* event);
+    virtual void MouseWheelUp(akView* sender, akMouseEvent* event);
+    virtual void MouseWheelDown(akView* sender, akMouseEvent* event);
+    /* akKeyEventReceiver overrides */
+    virtual void KeyPress(akView* sender, akKeyEvent* event);
+    virtual void KeyRelease(akView* sender, akKeyEvent* event);
+    virtual void TextInput(akView* sender, akKeyEvent* event);
+    /* akPainter overrides */
+    virtual void Paint(akView* view, SDL_Surface* destination);
+
 private:
-	string mText;
-	int mButtonState;
-	akRadioButtonGroup *mGroup;
+    string mText;
+    int mButtonState;
+    akRadioButtonGroup* mGroup;
 };
 
 #endif

@@ -6,18 +6,17 @@
 
 class WindowManager;
 
-class WindowInteractions
-{
+class WindowInteractions {
 public:
-	WindowInteractions(WindowManager *wm);
-	void OnInputEvent(akInputEvent *evt);
-	BaseWindow* GetTopLevelWindow();
-	BaseWindow* GetWindowThatContainsPoint(akPoint point);
-public:
-	WindowManager *mWindowManager;
-	BaseWindow *mTopLevelWindow;
-	BaseWindow *mCapturedWindow;
-};
+    WindowInteractions(WindowManager* wm);
+    void OnInputEvent(akInputEvent* evt);
+    BaseWindow* GetTopLevelWindow();
+    BaseWindow* GetWindowThatContainsPoint(akPoint point);
 
+public:
+    WindowManager* mWindowManager;
+    BaseWindow* mTopLevelWindow;
+    BaseWindow* mCapturedWindow;
+};
 
 #endif

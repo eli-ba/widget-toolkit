@@ -3,16 +3,16 @@
 
 #include <AppKit/appkit_export.h>
 
-class APPKIT_API akColor
-{
+class APPKIT_API akColor {
 public:
-	akColor();
-	akColor(int r, int g, int b, int a);
+    akColor();
+    akColor(int r, int g, int b, int a);
+
 public:
-	int r;
-	int g;
-	int b;
-	int a;
+    int r;
+    int g;
+    int b;
+    int a;
 };
 
 #endif

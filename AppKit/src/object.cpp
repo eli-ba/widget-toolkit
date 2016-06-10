@@ -2,15 +2,15 @@
 
 akObject::akObject()
 {
-	mClassName = "akObject";
+    mClassName = "akObject";
 }
 
 void akObject::SetClassName(string className)
 {
-	mClassName = className;
+    mClassName = className;
 }
 
 string akObject::GetClassName()
 {
-	return mClassName;
+    return mClassName;
 }

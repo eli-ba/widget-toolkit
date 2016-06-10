@@ -3,26 +3,26 @@
 
 akInputEvent::akInputEvent()
 {
-	SetClassName("akInputEvent");
-	mWindow = NULL;
+    SetClassName("akInputEvent");
+    mWindow = NULL;
 }
 
-void akInputEvent::SetWindow(akWindow *wnd)
+void akInputEvent::SetWindow(akWindow* wnd)
 {
-	mWindow = wnd;
+    mWindow = wnd;
 }
 
 void akInputEvent::SetType(int type)
 {
-	mType = type;
+    mType = type;
 }
 
 akWindow* akInputEvent::GetWindow()
 {
-	return mWindow;
+    return mWindow;
 }
 
 int akInputEvent::GetType()
 {
-	return mType;
+    return mType;
 }

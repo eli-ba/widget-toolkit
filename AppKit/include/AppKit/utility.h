@@ -3,11 +3,10 @@
 
 #include <AppKit/geometry.h>
 
-class Utility
-{
+class Utility {
 public:
-	static bool BitTest(long value, int bitIndex);
-	static bool RectContainsPoint(akRect rect, akPoint point);
+    static bool BitTest(long value, int bitIndex);
+    static bool RectContainsPoint(akRect rect, akPoint point);
 };
 
 #endif

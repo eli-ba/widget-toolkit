@@ -11,26 +11,25 @@
 
 using namespace std;
 
-class akMessageBoxActionsReceiver : public akActionReceiver
-{
+class akMessageBoxActionsReceiver : public akActionReceiver {
 public:
-	akMessageBoxActionsReceiver(akWindow *wnd);
-	virtual void ActionPerformed(akControl *sender);
+    akMessageBoxActionsReceiver(akWindow* wnd);
+    virtual void ActionPerformed(akControl* sender);
+
 private:
-	akWindow *mWnd;
+    akWindow* mWnd;
 };
 
-class APPKIT_API akMessageBox
-{
+class APPKIT_API akMessageBox {
 public:
-	akMessageBox(string title, string message, akWindow *parent = NULL);
+    akMessageBox(string title, string message, akWindow* parent = NULL);
+
 private:
-	
 private:
-	string mMessage;
-	akLabel *mLabel;
-	akPushButton *mButtonOK;
-	akWindow *mMsgWnd;
+    string mMessage;
+    akLabel* mLabel;
+    akPushButton* mButtonOK;
+    akWindow* mMsgWnd;
 };
 
 #endif

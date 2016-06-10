@@ -2,36 +2,36 @@
 
 FILE _iob[] = { *stdin, *stdout, *stderr };
 
-extern "C" FILE * __cdecl __iob_func(void)
+extern "C" FILE* __cdecl __iob_func(void)
 {
-	return _iob;
+    return _iob;
 }
 
-Demo::Demo(const string &name)
-	: akApplication(name)
+Demo::Demo(const string& name)
+    : akApplication(name)
 {
-	mWnd = new akWindow(akRect(100,50,200,355), "Demo", akWS_CLOSABLE);
+    mWnd = new akWindow(akRect(100, 50, 200, 355), "Demo", akWS_CLOSABLE);
 
-	mTextBox1 = new akTextBox(akRect(20,20,150,25), "");
-	mListBox1 = new akListBox(akRect(20,50,150,200));
-	mButton1 = new akPushButton(akRect(20,255,150,30), "Ajouter");
+    mTextBox1 = new akTextBox(akRect(20, 20, 150, 25), "");
+    mListBox1 = new akListBox(akRect(20, 50, 150, 200));
+    mButton1 = new akPushButton(akRect(20, 255, 150, 30), "Ajouter");
 
-	mButton1->AddActionReceiver(this);
+    mButton1->AddActionReceiver(this);
 
-	mWnd->AddView(mTextBox1);
-	mWnd->AddView(mListBox1);
-	mWnd->AddView(mButton1);
+    mWnd->AddView(mTextBox1);
+    mWnd->AddView(mListBox1);
+    mWnd->AddView(mButton1);
 
-	mWnd->SetVisible(true);
+    mWnd->SetVisible(true);
 }
 
-void Demo::ActionPerformed(akControl *sender)
+void Demo::ActionPerformed(akControl* sender)
 {
-	mListBox1->AddItem(mTextBox1->GetText());
+    mListBox1->AddItem(mTextBox1->GetText());
 }
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
-	Demo *app = new Demo("Application demo");
-	return app->Run();
+    Demo* app = new Demo("Application demo");
+    return app->Run();
 }

@@ -9,14 +9,14 @@
 
 using namespace std;
 
-class APPKIT_API akApplication : public akObject
-{
+class APPKIT_API akApplication : public akObject {
 public:
-	akApplication(const string &name);
-	akApplication(akSize size, const string &name);
-	int Run();
+    akApplication(const string& name);
+    akApplication(akSize size, const string& name);
+    int Run();
+
 private:
-	void DispatchEvent(akInputEvent *evt);
+    void DispatchEvent(akInputEvent* evt);
 };
 
 #endif

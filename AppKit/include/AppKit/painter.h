@@ -6,10 +6,9 @@
 
 class akView;
 
-class APPKIT_API akPainter
-{
+class APPKIT_API akPainter {
 public:
-	virtual void Paint(akView *view, SDL_Surface *destination) = 0;
+    virtual void Paint(akView* view, SDL_Surface* destination) = 0;
 };
 
 #endif

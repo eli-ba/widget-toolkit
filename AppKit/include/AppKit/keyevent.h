@@ -5,15 +5,15 @@
 #include <AppKit/inputevent.h>
 #include <string>
 
-class APPKIT_API akKeyEvent: public akInputEvent {
+class APPKIT_API akKeyEvent : public akInputEvent {
 public:
-	akKeyEvent();
+    akKeyEvent();
     //int GetUnicode();
     int GetKeyEvent();
     //void SetUnicode(int unicode);
     void SetKeyEvent(int keyEvent);
     void SetText(std::string text);
-    std::string const & GetText();
+    std::string const& GetText();
     int32_t GetScancode() const { return mScancode; }
     void SetScancode(int32_t scancode) { mScancode = scancode; }
     int32_t GetKeycode() const { return mKeycode; }
@@ -28,7 +28,5 @@ private:
     int32_t mKeycode = 0;
     int32_t mKeymod = 0;
 };
-
-
 
 #endif

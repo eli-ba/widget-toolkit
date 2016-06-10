@@ -3,8 +3,8 @@
 
 akKeyEvent::akKeyEvent()
 {
-	SetClassName("akKeyEvent");
-	SetType(akINPUT_EVENT_KEY);
+    SetClassName("akKeyEvent");
+    SetType(akINPUT_EVENT_KEY);
 }
 /*
 int akKeyEvent::GetUnicode()
@@ -14,7 +14,7 @@ int akKeyEvent::GetUnicode()
 */
 int akKeyEvent::GetKeyEvent()
 {
-	return mKeyEvent;
+    return mKeyEvent;
 }
 /*
 void akKeyEvent::SetUnicode(int unicode)
@@ -24,7 +24,7 @@ void akKeyEvent::SetUnicode(int unicode)
 */
 void akKeyEvent::SetKeyEvent(int keyEvent)
 {
-	mKeyEvent = keyEvent;
+    mKeyEvent = keyEvent;
 }
 
 void akKeyEvent::SetText(const std::string text)
@@ -32,7 +32,7 @@ void akKeyEvent::SetText(const std::string text)
     mText = text;
 }
 
-std::string const & akKeyEvent::GetText()
+std::string const& akKeyEvent::GetText()
 {
     return mText;
 }

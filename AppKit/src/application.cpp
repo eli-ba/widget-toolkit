@@ -1,28 +1,27 @@
 #include <AppKit/application.h>
 #include <AppKit/windowmanager.h>
 
-WindowManager *TheWindowManager = NULL;
+WindowManager* TheWindowManager = NULL;
 
-akApplication::akApplication(const string &name)
+akApplication::akApplication(const string& name)
 {
-	SetClassName("akApplication");
-	TheWindowManager = new WindowManager(akSize(800,600), name);
+    SetClassName("akApplication");
+    TheWindowManager = new WindowManager(akSize(800, 600), name);
 }
 
-akApplication::akApplication(akSize size, const string &name)
+akApplication::akApplication(akSize size, const string& name)
 {
-	SetClassName("akApplication");
-	TheWindowManager = new WindowManager(size, name);
+    SetClassName("akApplication");
+    TheWindowManager = new WindowManager(size, name);
 }
 
 int akApplication::Run()
 {
-	bool run = true;
+    bool run = true;
 
-	do {
-		TheWindowManager->ProcessEvents();
-	} while(run);
+    do {
+        TheWindowManager->ProcessEvents();
+    } while (run);
 
-	return 0;
+    return 0;
 }
-

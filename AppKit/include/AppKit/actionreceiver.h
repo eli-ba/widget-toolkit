@@ -5,10 +5,9 @@
 
 class akControl;
 
-class APPKIT_API akActionReceiver
-{
+class APPKIT_API akActionReceiver {
 public:
-	virtual void ActionPerformed(akControl *sender) = 0;
+    virtual void ActionPerformed(akControl* sender) = 0;
 };
 
 #endif
