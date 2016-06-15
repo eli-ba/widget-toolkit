@@ -19,7 +19,7 @@ WindowManager::WindowManager(akSize resolution, const string& name)
     Resources::Load();
 
     if (SDL_Init(SDL_INIT_VIDEO) == 0) {
-        _window = SDL_CreateWindow("appserver", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, mResolution.width, mResolution.height, SDL_WINDOW_SHOWN);
+        _window = SDL_CreateWindow(name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, mResolution.width, mResolution.height, SDL_WINDOW_SHOWN);
         _renderer = SDL_CreateRenderer(_window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
         SDL_SetRenderDrawBlendMode(_renderer, SDL_BLENDMODE_BLEND);
     }
