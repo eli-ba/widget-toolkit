@@ -1,5 +1,7 @@
 #include <widgettoolkit/utility.h>
 
+namespace Wt {
+
 bool Utility::BitTest(long n, int bitIndex)
 {
     int d = 1;
@@ -11,11 +13,13 @@ bool Utility::BitTest(long n, int bitIndex)
         return false;
 }
 
-bool Utility::RectContainsPoint(akRect rect, akPoint point)
+bool Utility::RectContainsPoint(Rect rect, Point point)
 {
     if (point.x >= rect.location.x && point.y >= rect.location.y && point.x <= rect.location.x + rect.size.width && point.y <= rect.location.y + rect.size.height) {
         return true;
     }
     else
         return false;
+}
+
 }

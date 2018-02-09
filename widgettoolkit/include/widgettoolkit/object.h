@@ -3,14 +3,18 @@
 #include <widgettoolkit/export.h>
 #include <string>
 
+namespace Wt {
+
 using namespace std;
 
-class APPKIT_API akObject {
+class WIDGETTOOLKIT_EXPORT Object {
 public:
-    akObject();
+    Object();
     void SetClassName(string className);
     string GetClassName();
 
 private:
     string mClassName;
 };
+
+}

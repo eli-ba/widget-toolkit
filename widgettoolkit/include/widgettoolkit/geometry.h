@@ -2,38 +2,42 @@
 
 #include <widgettoolkit/export.h>
 
-class APPKIT_API akPoint {
+namespace Wt {
+
+class WIDGETTOOLKIT_EXPORT Point {
 public:
-    akPoint();
-    akPoint(int x, int y);
+    Point();
+    Point(int x, int y);
 
 public:
     int x;
     int y;
 };
 
-class APPKIT_API akSize {
+class WIDGETTOOLKIT_EXPORT Size {
 public:
-    akSize();
-    akSize(int width, int height);
+    Size();
+    Size(int width, int height);
 
 public:
     int width;
     int height;
 };
 
-class APPKIT_API akRect {
+class WIDGETTOOLKIT_EXPORT Rect {
 public:
-    akRect();
-    akRect(int x, int y, int width, int height);
-    akRect(akPoint location, akSize size);
+    Rect();
+    Rect(int x, int y, int width, int height);
+    Rect(Point location, Size size);
 
 public:
-    akPoint location;
-    akSize size;
+    Point location;
+    Size size;
 };
 
 //APPKIT_API akSize akMakeSize(int width, int height);
 //APPKIT_API akPoint akMakePoint(int x, int y);
 //APPKIT_API akRect akMakeRect(int x, int y, int width, int height);
 //APPKIT_API akRect akMakeRect(akPoint location, akSize *size);
+
+}

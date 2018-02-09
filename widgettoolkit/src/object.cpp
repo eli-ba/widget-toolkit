@@ -1,16 +1,20 @@
 #include <widgettoolkit/object.h>
 
-akObject::akObject()
+namespace Wt {
+
+Object::Object()
 {
     mClassName = "akObject";
 }
 
-void akObject::SetClassName(string className)
+void Object::SetClassName(string className)
 {
     mClassName = className;
 }
 
-string akObject::GetClassName()
+string Object::GetClassName()
 {
     return mClassName;
+}
+
 }

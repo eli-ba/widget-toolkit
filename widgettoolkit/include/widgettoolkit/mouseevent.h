@@ -5,21 +5,25 @@
 #include <widgettoolkit/inputevent.h>
 #include <widgettoolkit/geometry.h>
 
-class APPKIT_API akMouseEvent : public akInputEvent {
+namespace Wt {
+
+class WIDGETTOOLKIT_EXPORT MouseEvent : public InputEvent {
 public:
-    akMouseEvent();
+    MouseEvent();
     int GetMouseEvent();
     int GetButton();
-    akPoint GetLocation();
-    akPoint GetLocationInWindow();
+    Point GetLocation();
+    Point GetLocationInWindow();
     void SetMouseEvent(int mouseEvent);
     void SetButton(int button);
-    void SetLocation(akPoint location);
-    void SetLocationInWindow(akPoint location);
+    void SetLocation(Point location);
+    void SetLocationInWindow(Point location);
 
 private:
     int mMouseEvent;
     int mButton;
-    akPoint mLocation;
-    akPoint mLocationInWindow;
+    Point mLocation;
+    Point mLocationInWindow;
 };
+
+}

@@ -4,9 +4,11 @@
 #include <widgettoolkit/inputevent.h>
 #include <string>
 
-class APPKIT_API akKeyEvent : public akInputEvent {
+namespace Wt {
+
+class WIDGETTOOLKIT_EXPORT KeyEvent : public InputEvent {
 public:
-    akKeyEvent();
+    KeyEvent();
     //int GetUnicode();
     int GetKeyEvent();
     //void SetUnicode(int unicode);
@@ -28,3 +30,4 @@ private:
     int32_t mKeymod = 0;
 };
 
+}

@@ -1,28 +1,32 @@
 #include <stdlib.h>
 #include <widgettoolkit/inputevent.h>
 
-akInputEvent::akInputEvent()
+namespace Wt {
+
+InputEvent::InputEvent()
 {
     SetClassName("akInputEvent");
     mWindow = NULL;
 }
 
-void akInputEvent::SetWindow(akWindow* wnd)
+void InputEvent::SetWindow(Window* wnd)
 {
     mWindow = wnd;
 }
 
-void akInputEvent::SetType(int type)
+void InputEvent::SetType(int type)
 {
     mType = type;
 }
 
-akWindow* akInputEvent::GetWindow()
+Window* InputEvent::GetWindow()
 {
     return mWindow;
 }
 
-int akInputEvent::GetType()
+int InputEvent::GetType()
 {
     return mType;
+}
+
 }

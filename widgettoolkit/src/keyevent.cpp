@@ -1,10 +1,12 @@
 #include <widgettoolkit/keyevent.h>
 #include <widgettoolkit/constants.h>
 
-akKeyEvent::akKeyEvent()
+namespace Wt {
+
+KeyEvent::KeyEvent()
 {
     SetClassName("akKeyEvent");
-    SetType(akINPUT_EVENT_KEY);
+    SetType(WT_INPUT_EVENT_KEY);
 }
 /*
 int akKeyEvent::GetUnicode()
@@ -12,7 +14,7 @@ int akKeyEvent::GetUnicode()
 	return mUnicode;
 }
 */
-int akKeyEvent::GetKeyEvent()
+int KeyEvent::GetKeyEvent()
 {
     return mKeyEvent;
 }
@@ -22,17 +24,19 @@ void akKeyEvent::SetUnicode(int unicode)
 	mUnicode = unicode;
 }
 */
-void akKeyEvent::SetKeyEvent(int keyEvent)
+void KeyEvent::SetKeyEvent(int keyEvent)
 {
     mKeyEvent = keyEvent;
 }
 
-void akKeyEvent::SetText(const std::string text)
+void KeyEvent::SetText(const std::string text)
 {
     mText = text;
 }
 
-std::string const& akKeyEvent::GetText()
+std::string const& KeyEvent::GetText()
 {
     return mText;
+}
+
 }

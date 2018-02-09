@@ -10,24 +10,28 @@
 #include <widgettoolkit/control.h>
 #include <string>
 
+namespace Wt {
+
 using namespace std;
 
-class APPKIT_API akPushButton : public akControl, akMouseEventReceiver, akPainter {
+class WIDGETTOOLKIT_EXPORT PushButton : public Control, MouseEventReceiver, Painter {
 public:
-    akPushButton(akRect rect, string text, akView* parent = NULL);
+    PushButton(Rect rect, string text, View* parent = NULL);
     string GetText();
     void SetText(string text);
 
 private:
-    virtual void MousePress(akView* sender, akMouseEvent* event);
-    virtual void MouseRelease(akView* sender, akMouseEvent* event);
-    virtual void MouseMove(akView* sender, akMouseEvent* event);
-    virtual void MouseDrag(akView* sender, akMouseEvent* event);
-    virtual void MouseWheelUp(akView* sender, akMouseEvent* event);
-    virtual void MouseWheelDown(akView* sender, akMouseEvent* event);
-    virtual void Paint(akView* view, SDL_Surface* destination);
+    virtual void MousePress(View* sender, MouseEvent* event);
+    virtual void MouseRelease(View* sender, MouseEvent* event);
+    virtual void MouseMove(View* sender, MouseEvent* event);
+    virtual void MouseDrag(View* sender, MouseEvent* event);
+    virtual void MouseWheelUp(View* sender, MouseEvent* event);
+    virtual void MouseWheelDown(View* sender, MouseEvent* event);
+    virtual void Paint(View* view, SDL_Surface* destination);
 
 private:
     string mText;
     int mButtonState;
 };
+
+}

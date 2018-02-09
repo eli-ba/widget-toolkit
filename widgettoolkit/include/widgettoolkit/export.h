@@ -1,7 +1,7 @@
 #pragma once
 
 #ifdef _WIN32
-#define APPKIT_API __declspec(dllexport)
+#define WIDGETTOOLKIT_EXPORT __declspec(dllexport)
 #else
-#define APPKIT_API __attribute__((visibility("default")))
+#define WIDGETTOOLKIT_EXPORT __attribute__((visibility("default")))
 #endif

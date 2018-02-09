@@ -2,10 +2,12 @@
 
 #include <widgettoolkit/export.h>
 
-class APPKIT_API akColor {
+namespace Wt {
+
+class WIDGETTOOLKIT_EXPORT Color {
 public:
-    akColor();
-    akColor(int r, int g, int b, int a);
+    Color();
+    Color(int r, int g, int b, int a);
 
 public:
     int r;
@@ -13,3 +15,5 @@ public:
     int b;
     int a;
 };
+
+}

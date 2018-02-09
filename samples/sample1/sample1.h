@@ -1,13 +1,17 @@
+#pragma once
+
 #include <widgettoolkit/widgettoolkit.h>
 
-class Demo : public akApplication, akActionReceiver {
+using namespace Wt;
+
+class Demo : public Application, ActionReceiver {
 public:
     Demo(const string& name);
-    virtual void ActionPerformed(akControl* sender);
+    virtual void ActionPerformed(Control* sender);
 
 private:
-    akWindow* mWnd;
-    akTextBox* mTextBox1;
-    akListBox* mListBox1;
-    akPushButton* mButton1;
+    Window* mWnd;
+    TextBox* mTextBox1;
+    ListBox* mListBox1;
+    PushButton* mButton1;
 };

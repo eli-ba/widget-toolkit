@@ -10,11 +10,13 @@
 #include <vector>
 #include <string>
 
+namespace Wt {
+
 using namespace std;
 
 class WindowManager {
 public:
-    WindowManager(akSize resolution, const string& name);
+    WindowManager(Size resolution, const string& name);
     void MakeTopLevel(BaseWindow* wnd);
     void AddWindow(BaseWindow* wnd);
     BaseWindow* RemoveWindow(BaseWindow* wd);
@@ -22,20 +24,22 @@ public:
     void ComposeWindows();
     void Close();
     vector<BaseWindow*> GetWindows();
-    akSize GetResolution();
+    Size GetResolution();
     ~WindowManager();
 
 private:
-    akInputEvent* ParseSDLEvent(SDL_Event* evt);
+    InputEvent* ParseSDLEvent(SDL_Event* evt);
 
 private:
     //SDL_Surface *mScreen;
-    akSize mResolution;
+    Size mResolution;
     vector<BaseWindow*> mWindows;
     WindowInteractions* mWindowInteractions;
     string mApplicationName;
     bool mRunning;
     SDL_Window* _window = nullptr;
     SDL_Renderer* _renderer = nullptr;
-    akPoint mMouseMotion;
+    Point mMouseMotion;
 };
+
+}

@@ -1,19 +1,21 @@
 #include <widgettoolkit/control.h>
 
-akControl::akControl(akRect rect, akView* parent /*= NULL*/)
-    : akView(rect, parent)
+namespace Wt {
+
+Control::Control(Rect rect, View* parent /*= NULL*/)
+    : View(rect, parent)
 {
 }
 
-void akControl::AddActionReceiver(akActionReceiver* receiver)
+void Control::AddActionReceiver(ActionReceiver* receiver)
 {
     mActionReceivers.push_back(receiver);
 }
 
-void akControl::RemoveActionReceiver(akActionReceiver* receiver)
+void Control::RemoveActionReceiver(ActionReceiver* receiver)
 {
     for (unsigned int i = 0; i < mActionReceivers.size(); i++) {
-        akActionReceiver* receiverToDelete = mActionReceivers.at(i);
+        ActionReceiver* receiverToDelete = mActionReceivers.at(i);
         if (receiverToDelete == receiver) {
             mActionReceivers.erase(mActionReceivers.begin() + i);
             return;
@@ -21,10 +23,12 @@ void akControl::RemoveActionReceiver(akActionReceiver* receiver)
     }
 }
 
-void akControl::InvokeActionReceivers(akControl* sender)
+void Control::InvokeActionReceivers(Control* sender)
 {
     for (unsigned int i = 0; i < mActionReceivers.size(); i++) {
-        akActionReceiver* rcv = mActionReceivers.at(i);
+        ActionReceiver* rcv = mActionReceivers.at(i);
         rcv->ActionPerformed(sender);
     }
+}
+
 }

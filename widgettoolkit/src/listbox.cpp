@@ -4,16 +4,105 @@
 #include <widgettoolkit/window.h>
 #include <SDL_image.h>
 
-/* *********************************
- * ListBox Object Oriented Wrapper *
- ***********************************/
+using namespace std;
 
-akListBox::akListBox(akRect rect, akView* parent)
-    : akControl(rect, parent)
+typedef struct ListBox_Item ListBox_Item;
+struct ListBox_Item {
+	int x;
+	int y;
+	char* text;
+	SDL_Surface* surface;
+	SDL_Surface* surface_selected;
+	int select;
+	int index;
+	SDL_Surface* textsurf;
+};
+
+typedef struct ListBox_ItemList ListBox_ItemList;
+struct ListBox_ItemList {
+	ListBox_Item info;
+	ListBox_ItemList* next;
+};
+
+typedef struct ListBox ListBox;
+struct ListBox {
+	//akListBox *akListBoxObject;
+	int x;
+	int y;
+	int width;
+	int height;
+	SDL_Surface* surface;
+	SDL_Surface* bg;
+	TTF_Font* font;
+	ListBox_ItemList* ItemList;
+	SDL_Color bgColor;
+	SDL_Color selectionColor;
+	int k;
+	int of;
+	int scrollScale;
+	SDL_Surface** data;
+	int mouseDown_scrollUp;
+	int mouseDown_scrollDown;
+	int mouseDown_scrollBar;
+	int currentNbScroll;
+	int stopHScroll;
+	int nbScroll;
+	SDL_Surface* destSurface;
+	int stop, tik, cTime, pTime, i;
+	int upScrollBtnState, downScrollBtnState;
+	ListBox_ItemList* selectedItem;
+	ListBox_ItemList* selStartItem;
+	ListBox_ItemList* selEndItem;
+	int mouseBtnHoldIndicator;
+	int itemsCount;
+	int focus;
+	SDL_Surface* mbg;
+	int mouseHold;
+	int multiSelect;
+	int invMultiSel;
+	int shiftHold;
+};
+
+void __ListBox_Draw(ListBox* listbox, int updateWnd);
+void ListBox_SetItemBg(ListBox* listbox, int index, SDL_Surface* bg, int x, int y);
+void ListBox_SetItemBg1(ListBox* listbox, ListBox_ItemList* p, SDL_Surface* bg, int x, int y);
+ListBox_ItemList* ListBox_GetSelectedItems(ListBox* listbox);
+
+ListBox* ListBox_Init(int x, int y, int width, int height, TTF_Font* font, int scrollScale,
+	SDL_Color bgColor, SDL_Color selectionColor, void* listBoxObject);
+void ListBox_Draw(ListBox* listbox);
+void ListBox_DrawContent(ListBox* listbox);
+void ListBox_DrawBorder(ListBox* w);
+void ListBox_AddItem(ListBox* listbox, const char* itemtext);
+char* ListBox_GetItem(ListBox* listbox, int index);
+void ListBox_SetItem(ListBox* listbox, int index, char* text);
+int ListBox_RemoveItem(ListBox* listbox, int index);
+int ListBox_GetSelectionIndex(ListBox* listbox);
+char* ListBox_GetSelectionText(ListBox* listbox);
+void ListBox_ScrollDown(ListBox* listbox);
+void ListBox_ScrollUp(ListBox* listbox);
+int ListBox_GetNbScroll(ListBox* listbox);
+int ListBox_GetNbItems(ListBox* listbox);
+
+void ListBox_OnMouseButtonDown(ListBox* listbox, int mouse_x, int mouse_y);
+void ListBox_OnMouseButtonUp(ListBox* listbox, int mouse_x, int mouse_y);
+void ListBox_OnMouseMotion(ListBox* listbox, int mouse_x, int mouse_y);
+void ListBox_OnKeyDown(ListBox* listbox, int sym);
+void ListBox_OnKeyUp(ListBox* listbox);
+void ListBox_OnWheelDown(ListBox* listbox, int mouse_x, int mouse_y);
+void ListBox_OnWheelUp(ListBox* listbox, int mouse_x, int mouse_y);
+void ListBox_OnNoEvent(ListBox* listbox, int mouse_x, int mouse_y);
+
+void ListBox_Delete(ListBox* listbox);
+
+namespace Wt {
+
+ListBox::ListBox(Rect rect, View* parent)
+    : Control(rect, parent)
 {
     SetClassName("ListBox");
 
-    akRect viewRect = GetRect();
+    Rect viewRect = GetRect();
 
     SDL_Color bgColor;
     bgColor.r = bgColor.g = bgColor.b = 255;
@@ -32,196 +121,219 @@ akListBox::akListBox(akRect rect, akView* parent)
     AddViewNotificationReceiver(this);
 }
 
-void akListBox::AddItem(string text)
+void ListBox::AddItem(string text)
 {
-    ListBox_AddItem(mListBox, text.c_str());
+	::ListBox* listBox = (::ListBox*)mListBox;
+    ListBox_AddItem(listBox, text.c_str());
 }
 
-void akListBox::RemoveItem(int index)
+void ListBox::RemoveItem(int index)
 {
-    ListBox_RemoveItem(mListBox, index);
+	::ListBox* listBox = (::ListBox*)mListBox;
+    ListBox_RemoveItem(listBox, index);
 }
 
-string akListBox::GetItemText(int index)
+string ListBox::GetItemText(int index)
 {
-    string text(ListBox_GetItem(mListBox, index));
+	::ListBox* listBox = (::ListBox*)mListBox;
+    string text(ListBox_GetItem(listBox, index));
     return text;
 }
 
-void akListBox::SetItemText(int index, string text)
+void ListBox::SetItemText(int index, string text)
 {
-    ListBox_SetItem(mListBox, index, (char*)text.c_str());
+	::ListBox* listBox = (::ListBox*)mListBox;
+    ListBox_SetItem(listBox, index, (char*)text.c_str());
 }
 
-int akListBox::GetSelectionIndex()
+int ListBox::GetSelectionIndex()
 {
-    return ListBox_GetSelectionIndex(mListBox);
+	::ListBox* listBox = (::ListBox*)mListBox;
+    return ListBox_GetSelectionIndex(listBox);
 }
 
 /* akPainter Override */
-void akListBox::Paint(akView* view, SDL_Surface* destination)
+void ListBox::Paint(View* view, SDL_Surface* destination)
 {
     SDL_Rect p, ps;
     int i, l, scale;
     SDL_Surface* scrollbar = NULL;
-    ListBox* listbox = mListBox;
 
-    ListBox_DrawContent(listbox);
-    LegacyTools::Blit(listbox->bg, 0, 0, listbox->width, listbox->height, listbox->destSurface, 0, 0);
-    LegacyTools::Blit(listbox->surface, 0, listbox->k, listbox->width, listbox->height, listbox->destSurface, 0, 0);
+	::ListBox* listBox = (::ListBox*)mListBox;
 
-    if (listbox->of) {
-        p.x = 0 + listbox->width - listbox->data[0]->w;
+    ListBox_DrawContent(listBox);
+    LegacyTools::Blit(listBox->bg, 0, 0, listBox->width, listBox->height, listBox->destSurface, 0, 0);
+    LegacyTools::Blit(listBox->surface, 0, listBox->k, listBox->width, listBox->height, listBox->destSurface, 0, 0);
+
+    if (listBox->of) {
+        p.x = 0 + listBox->width - listBox->data[0]->w;
         p.y = 0;
-        if (listbox->upScrollBtnState) {
-            SDL_BlitSurface(listbox->data[1], NULL, listbox->destSurface, &p);
+        if (listBox->upScrollBtnState) {
+            SDL_BlitSurface(listBox->data[1], NULL, listBox->destSurface, &p);
         }
         else {
-            SDL_BlitSurface(listbox->data[0], NULL, listbox->destSurface, &p);
+            SDL_BlitSurface(listBox->data[0], NULL, listBox->destSurface, &p);
         }
 
-        p.x = 0 + listbox->width - listbox->data[2]->w;
-        p.y = 0 + listbox->height - listbox->data[2]->h;
-        if (listbox->downScrollBtnState) {
-            SDL_BlitSurface(listbox->data[3], NULL, listbox->destSurface, &p);
+        p.x = 0 + listBox->width - listBox->data[2]->w;
+        p.y = 0 + listBox->height - listBox->data[2]->h;
+        if (listBox->downScrollBtnState) {
+            SDL_BlitSurface(listBox->data[3], NULL, listBox->destSurface, &p);
         }
         else {
 
-            SDL_BlitSurface(listbox->data[2], NULL, listbox->destSurface, &p);
+            SDL_BlitSurface(listBox->data[2], NULL, listBox->destSurface, &p);
         }
 
-        for (i = 0; i < (listbox->height - listbox->data[0]->h - listbox->data[2]->h); i++) {
-            p.x = 0 + listbox->width - listbox->data[4]->w;
-            p.y = 0 + listbox->data[0]->h + i;
+        for (i = 0; i < (listBox->height - listBox->data[0]->h - listBox->data[2]->h); i++) {
+            p.x = 0 + listBox->width - listBox->data[4]->w;
+            p.y = 0 + listBox->data[0]->h + i;
             ps.x = 0;
             ps.y = 1;
-            ps.w = listbox->data[4]->w;
+            ps.w = listBox->data[4]->w;
             ps.h = 1;
-            SDL_BlitSurface(listbox->data[4], &ps, listbox->destSurface, &p);
+            SDL_BlitSurface(listBox->data[4], &ps, listBox->destSurface, &p);
         }
 
-        listbox->nbScroll = ListBox_GetNbScroll(listbox);
+        listBox->nbScroll = ListBox_GetNbScroll(listBox);
 
-        l = listbox->height - (listbox->data[0]->h + listbox->data[2]->h);
-        if (listbox->nbScroll == 0) {
-            scrollbar = SDL_CreateRGBSurface(0, listbox->data[0]->w - 2, 1, 32, 0, 0, 0, 0);
+        l = listBox->height - (listBox->data[0]->h + listBox->data[2]->h);
+        if (listBox->nbScroll == 0) {
+            scrollbar = SDL_CreateRGBSurface(0, listBox->data[0]->w - 2, 1, 32, 0, 0, 0, 0);
         }
         else {
-            if ((l / listbox->nbScroll) < 0) {
-                scrollbar = SDL_CreateRGBSurface(0, listbox->data[0]->w - 2, 1, 32, 0, 0, 0, 0);
+            if ((l / listBox->nbScroll) < 0) {
+                scrollbar = SDL_CreateRGBSurface(0, listBox->data[0]->w - 2, 1, 32, 0, 0, 0, 0);
             }
             else {
-                scrollbar = SDL_CreateRGBSurface(0, listbox->data[0]->w - 2, l / listbox->nbScroll, 32, 0, 0, 0, 0);
+                scrollbar = SDL_CreateRGBSurface(0, listBox->data[0]->w - 2, l / listBox->nbScroll, 32, 0, 0, 0, 0);
             }
         }
 
-        SDL_FillRect(scrollbar, NULL, SDL_MapRGB(listbox->destSurface->format, listbox->bgColor.r - 100, listbox->bgColor.g - 100, listbox->bgColor.b - 100));
-        if (listbox->nbScroll == 0) {
-            scale = (l)*listbox->currentNbScroll;
+        SDL_FillRect(scrollbar, NULL, SDL_MapRGB(listBox->destSurface->format, listBox->bgColor.r - 100, listBox->bgColor.g - 100, listBox->bgColor.b - 100));
+        if (listBox->nbScroll == 0) {
+            scale = (l)*listBox->currentNbScroll;
         }
         else
-            scale = (l / listbox->nbScroll) * listbox->currentNbScroll;
+            scale = (l / listBox->nbScroll) * listBox->currentNbScroll;
 
-        p.y = 0 + listbox->data[0]->h + scale;
+        p.y = 0 + listBox->data[0]->h + scale;
 
-        if (listbox->currentNbScroll == listbox->nbScroll) {
-            if (listbox->nbScroll == 0)
-                p.y = 0 + listbox->height - listbox->data[2]->h - l;
+        if (listBox->currentNbScroll == listBox->nbScroll) {
+            if (listBox->nbScroll == 0)
+                p.y = 0 + listBox->height - listBox->data[2]->h - l;
             else
-                p.y = 0 + listbox->height - listbox->data[2]->h - l / listbox->nbScroll;
+                p.y = 0 + listBox->height - listBox->data[2]->h - l / listBox->nbScroll;
         }
-        p.x = 0 + listbox->width - scrollbar->w - 1;
-        SDL_BlitSurface(scrollbar, NULL, listbox->destSurface, &p);
+        p.x = 0 + listBox->width - scrollbar->w - 1;
+        SDL_BlitSurface(scrollbar, NULL, listBox->destSurface, &p);
     }
 
     /* To be updated */
     SDL_Rect dstrect;
-    dstrect.x = listbox->x - 2;
-    dstrect.y = listbox->y - 2;
-    SDL_BlitSurface(listbox->mbg, NULL, destination, &dstrect);
+    dstrect.x = listBox->x - 2;
+    dstrect.y = listBox->y - 2;
+    SDL_BlitSurface(listBox->mbg, NULL, destination, &dstrect);
 
-    dstrect.x = listbox->x;
-    dstrect.y = listbox->y;
-    SDL_BlitSurface(listbox->destSurface, NULL, destination, &dstrect);
+    dstrect.x = listBox->x;
+    dstrect.y = listBox->y;
+    SDL_BlitSurface(listBox->destSurface, NULL, destination, &dstrect);
 
     SDL_FreeSurface(scrollbar);
 }
 
 /* akMouseEvenReceiver Overrides */
-void akListBox::MousePress(akView* sender, akMouseEvent* event)
+void ListBox::MousePress(View* sender, MouseEvent* event)
 {
+	::ListBox* listBox = (::ListBox*)mListBox;
+
     this->InvokeActionReceivers(this);
     GetWindow()->SetFirstResponder(this);
-    ListBox_OnMouseButtonDown(mListBox, event->GetLocationInWindow().x, event->GetLocationInWindow().y);
+    ListBox_OnMouseButtonDown(listBox, event->GetLocationInWindow().x, event->GetLocationInWindow().y);
     GetWindow()->Repaint();
 }
 
-void akListBox::MouseRelease(akView* sender, akMouseEvent* event)
+void ListBox::MouseRelease(View* sender, MouseEvent* event)
 {
-    ListBox_OnMouseButtonUp(mListBox, event->GetLocationInWindow().x, event->GetLocationInWindow().y);
+	::ListBox* listBox = (::ListBox*)mListBox;
+
+    ListBox_OnMouseButtonUp(listBox, event->GetLocationInWindow().x, event->GetLocationInWindow().y);
     GetWindow()->Repaint();
 }
 
-void akListBox::MouseMove(akView* sender, akMouseEvent* event)
+void ListBox::MouseMove(View* sender, MouseEvent* event)
 {
 }
 
-void akListBox::MouseDrag(akView* sender, akMouseEvent* event)
+void ListBox::MouseDrag(View* sender, MouseEvent* event)
 {
-    ListBox_OnMouseMotion(mListBox, event->GetLocationInWindow().x, event->GetLocationInWindow().y);
+	::ListBox* listBox = (::ListBox*)mListBox;
+
+    ListBox_OnMouseMotion(listBox, event->GetLocationInWindow().x, event->GetLocationInWindow().y);
     GetWindow()->Repaint();
 }
 
-void akListBox::MouseWheelUp(akView* sender, akMouseEvent* event)
+void ListBox::MouseWheelUp(View* sender, MouseEvent* event)
 {
-    ListBox_OnWheelUp(mListBox, event->GetLocationInWindow().x, event->GetLocationInWindow().y);
+	::ListBox* listBox = (::ListBox*)mListBox;
+
+    ListBox_OnWheelUp(listBox, event->GetLocationInWindow().x, event->GetLocationInWindow().y);
     GetWindow()->Repaint();
 }
 
-void akListBox::MouseWheelDown(akView* sender, akMouseEvent* event)
+void ListBox::MouseWheelDown(View* sender, MouseEvent* event)
 {
-    ListBox_OnWheelDown(mListBox, event->GetLocationInWindow().x, event->GetLocationInWindow().y);
+	::ListBox* listBox = (::ListBox*)mListBox;
+
+    ListBox_OnWheelDown(listBox, event->GetLocationInWindow().x, event->GetLocationInWindow().y);
     GetWindow()->Repaint();
 }
 
 /* akKeyEventReceiver Overrides */
-void akListBox::KeyPress(akView* sender, akKeyEvent* event)
+void ListBox::KeyPress(View* sender, KeyEvent* event)
 {
+	::ListBox* listBox = (::ListBox*)mListBox;
     SDL_Event* sdlEvent = (SDL_Event*)event->Reserved;
-    ListBox_OnKeyDown(mListBox, sdlEvent->key.keysym.sym);
+    ListBox_OnKeyDown(listBox, sdlEvent->key.keysym.sym);
     GetWindow()->Repaint();
 }
 
-void akListBox::KeyRelease(akView* sender, akKeyEvent* event)
+void ListBox::KeyRelease(View* sender, KeyEvent* event)
 {
-    ListBox_OnKeyUp(mListBox);
+	::ListBox* listBox = (::ListBox*)mListBox;
+    ListBox_OnKeyUp(listBox);
     GetWindow()->Repaint();
 }
 
-void akListBox::TextInput(akView* sender, akKeyEvent* event)
+void ListBox::TextInput(View* sender, KeyEvent* event)
 {
 }
 
 /* akViewNotification receiver overrides */
-void akListBox::ViewWillResignFirstResponder()
+void ListBox::ViewWillResignFirstResponder()
 {
-    ListBox_DrawBorder(mListBox);
+	::ListBox* listBox = (::ListBox*)mListBox;
+    ListBox_DrawBorder(listBox);
 }
 
-void akListBox::ViewWillBecameFirstResponder()
+void ListBox::ViewWillBecameFirstResponder()
 {
-    akColor focusColor = GetFocusColor();
-    SDL_FillRect(mListBox->mbg, NULL, SDL_MapRGB(mListBox->mbg->format, focusColor.r, focusColor.g, focusColor.b));
+	::ListBox* listBox = (::ListBox*)mListBox;
+    Color focusColor = GetFocusColor();
+    SDL_FillRect(listBox->mbg, NULL, SDL_MapRGB(listBox->mbg->format, focusColor.r, focusColor.g, focusColor.b));
+}
+
+int ListBox::GetItemCount()
+{
+	::ListBox* listBox = (::ListBox*)mListBox;
+	return ListBox_GetNbItems(listBox);
+}
+
 }
 
 /* ******************************************************
  * LEGACY CODE (To be upgraded later in later versions) *
  ********************************************************/
-
-int akListBox::GetItemCount()
-{
-    return ListBox_GetNbItems(mListBox);
-}
 
 void ListBox_DrawBorder(ListBox* w)
 {
@@ -309,7 +421,7 @@ void ListBox_DrawBorder(ListBox* w)
 }
 
 ListBox* ListBox_Init(int x, int y, int width, int height, TTF_Font* font, int scrollScale,
-    SDL_Color bgColor, SDL_Color selectionColor, akListBox* listBoxObject)
+    SDL_Color bgColor, SDL_Color selectionColor, void* listBoxObject)
 {
     ListBox* w;
 
@@ -357,11 +469,11 @@ ListBox* ListBox_Init(int x, int y, int width, int height, TTF_Font* font, int s
     w->k = 0;
     w->scrollScale = scrollScale;
     w->data = (SDL_Surface**)malloc(sizeof(SDL_Surface) * 5);
-    w->data[0] = Resources::GetImageResource(SCROLLBUTTON_UP);
-    w->data[1] = Resources::GetImageResource(SCROLLBUTTON_UP_PRESSED);
-    w->data[2] = Resources::GetImageResource(SCROLLBUTTON_DOWN);
-    w->data[3] = Resources::GetImageResource(SCROLLBUTTON_DOWN_PRESSED);
-    w->data[4] = Resources::GetImageResource(SCROLLSURFACE);
+    w->data[0] = Wt::Resources::GetImageResource(Wt::SCROLLBUTTON_UP);
+    w->data[1] = Wt::Resources::GetImageResource(Wt::SCROLLBUTTON_UP_PRESSED);
+    w->data[2] = Wt::Resources::GetImageResource(Wt::SCROLLBUTTON_DOWN);
+    w->data[3] = Wt::Resources::GetImageResource(Wt::SCROLLBUTTON_DOWN_PRESSED);
+    w->data[4] = Wt::Resources::GetImageResource(Wt::SCROLLSURFACE);
     w->itemsCount = 0;
     w->multiSelect = 0;
     return w;
@@ -445,8 +557,8 @@ void ListBox_Draw(ListBox* listbox)
     SDL_Surface* scrollbar = NULL;
 
     ListBox_DrawContent(listbox);
-    LegacyTools::Blit(listbox->bg, 0, 0, listbox->width, listbox->height, listbox->destSurface, 0, 0);
-    LegacyTools::Blit(listbox->surface, 0, listbox->k, listbox->width, listbox->height, listbox->destSurface, 0, 0);
+	Wt::LegacyTools::Blit(listbox->bg, 0, 0, listbox->width, listbox->height, listbox->destSurface, 0, 0);
+	Wt::LegacyTools::Blit(listbox->surface, 0, listbox->k, listbox->width, listbox->height, listbox->destSurface, 0, 0);
 
     if (listbox->of) {
         p.x = 0 + listbox->width - listbox->data[0]->w;
@@ -525,8 +637,8 @@ void __ListBox_Draw(ListBox* listbox, int updateWnd)
     SDL_Surface* scrollbar = NULL;
 
     ListBox_DrawContent(listbox);
-    LegacyTools::Blit(listbox->bg, 0, 0, listbox->width, listbox->height, listbox->destSurface, 0, 0);
-    LegacyTools::Blit(listbox->surface, 0, listbox->k, listbox->width, listbox->height, listbox->destSurface, 0, 0);
+	Wt::LegacyTools::Blit(listbox->bg, 0, 0, listbox->width, listbox->height, listbox->destSurface, 0, 0);
+	Wt::LegacyTools::Blit(listbox->surface, 0, listbox->k, listbox->width, listbox->height, listbox->destSurface, 0, 0);
 
     if (listbox->of) {
         p.x = 0 + listbox->width - listbox->data[0]->w;

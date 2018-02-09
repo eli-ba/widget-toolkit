@@ -8,16 +8,18 @@
 #include <widgettoolkit/object.h>
 #include <string>
 
+namespace Wt {
+
 using namespace std;
 
-class APPKIT_API akWindow : public akObject, akPainter {
+class WIDGETTOOLKIT_EXPORT Window : public Object, Painter {
 public:
-    akWindow(akRect contentRect, string title, long style);
+    Window(Rect contentRect, string title, long style);
     string GetTitle();
-    akRect GetRect();
-    akRect GetContentRect();
-    void SetRect(akRect rect);
-    void SetContentRect(akRect rect);
+    Rect GetRect();
+    Rect GetContentRect();
+    void SetRect(Rect rect);
+    void SetContentRect(Rect rect);
     bool IsVisible();
     void SetVisible(bool visible);
     void SetMaximizable(bool maximizable);
@@ -26,24 +28,26 @@ public:
     bool IsMaximizable();
     bool IsMinimizable();
     bool IsClosable();
-    void SetBackgroundColor(akColor color);
-    akColor GetBackgroundColor();
+    void SetBackgroundColor(Color color);
+    Color GetBackgroundColor();
     void Repaint();
-    void AddView(akView* view);
-    void RemoveView(akView* view);
-    virtual void Paint(akView* view, SDL_Surface* destination);
-    akView* GetFirstResponder();
-    void SetFirstResponder(akView* view);
-    void DispatchInputEvent(akInputEvent* evt);
+    void AddView(View* view);
+    void RemoveView(View* view);
+    virtual void Paint(View* view, SDL_Surface* destination);
+    View* GetFirstResponder();
+    void SetFirstResponder(View* view);
+    void DispatchInputEvent(InputEvent* evt);
     void SetCanReceiveMouseMoveEvents(bool receive);
     bool CanReceiveMouseMotionEvents();
     void Close();
-    ~akWindow();
+    ~Window();
 
 public:
     BaseWindow* mBaseWindow;
-    akView* mContentView;
-    akColor mBgColor;
-    akView* mFirstResponder;
+    View* mContentView;
+    Color mBgColor;
+    View* mFirstResponder;
     bool mCanReceiveMouseMotionEvents;
 };
+
+}

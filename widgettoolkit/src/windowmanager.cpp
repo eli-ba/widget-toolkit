@@ -7,13 +7,15 @@
 #include <widgettoolkit/window.h>
 #include <widgettoolkit/utility.h>
 
+namespace Wt {
+
 #define APPKIT_DEFAULT_APPLICATION_NAME "AppKit Application"
 
-WindowManager::WindowManager(akSize resolution, const string& name)
+WindowManager::WindowManager(Size resolution, const string& name)
 {
     mResolution = resolution;
     mApplicationName = name;
-    mMouseMotion = akPoint(0, 0);
+    mMouseMotion = Point(0, 0);
 
     TTF_Init();
     Resources::Load();
@@ -38,39 +40,39 @@ void WindowManager::Close()
     mRunning = false;
 }
 
-akInputEvent* WindowManager::ParseSDLEvent(SDL_Event* evt)
+InputEvent* WindowManager::ParseSDLEvent(SDL_Event* evt)
 {
     static bool mouseButtonPressed = false;
-    akMouseEvent* mouseEvent = NULL;
-    akKeyEvent* keyEvent = NULL;
+    MouseEvent* mouseEvent = NULL;
+    KeyEvent* keyEvent = NULL;
 
     if (evt->type == SDL_KEYDOWN) {
-        keyEvent = new akKeyEvent();
+        keyEvent = new KeyEvent();
         keyEvent->SetKeycode(evt->key.keysym.sym);
         keyEvent->SetKeymod(evt->key.keysym.mod);
         keyEvent->SetScancode(evt->key.keysym.scancode);
-        keyEvent->SetKeyEvent(akKEY_EVENT_PRESS);
-        keyEvent->SetWindow((akWindow*)(mWindowInteractions->GetTopLevelWindow()->Window));
+        keyEvent->SetKeyEvent(WT_KEY_EVENT_PRESS);
+        keyEvent->SetWindow((Window*)(mWindowInteractions->GetTopLevelWindow()->Window));
         return keyEvent;
     }
     else if (evt->type == SDL_KEYUP) {
-        keyEvent = new akKeyEvent();
+        keyEvent = new KeyEvent();
         keyEvent->SetKeycode(evt->key.keysym.sym);
         keyEvent->SetKeymod(evt->key.keysym.mod);
         keyEvent->SetScancode(evt->key.keysym.scancode);
-        keyEvent->SetKeyEvent(akKEY_EVENT_RELEASE);
-        keyEvent->SetWindow((akWindow*)(mWindowInteractions->GetTopLevelWindow()->Window));
+        keyEvent->SetKeyEvent(WT_KEY_EVENT_RELEASE);
+        keyEvent->SetWindow((Window*)(mWindowInteractions->GetTopLevelWindow()->Window));
         return keyEvent;
     }
     else if (evt->type == SDL_TEXTINPUT) {
-        keyEvent = new akKeyEvent();
-        keyEvent->SetKeyEvent(akKEY_EVENT_TEXT);
+        keyEvent = new KeyEvent();
+        keyEvent->SetKeyEvent(WT_KEY_EVENT_TEXT);
         keyEvent->SetText(evt->text.text);
-        keyEvent->SetWindow((akWindow*)(mWindowInteractions->GetTopLevelWindow()->Window));
+        keyEvent->SetWindow((Window*)(mWindowInteractions->GetTopLevelWindow()->Window));
         return keyEvent;
     }
     else if (evt->type == SDL_MOUSEWHEEL) {
-        mouseEvent = new akMouseEvent();
+        mouseEvent = new MouseEvent();
 
         BaseWindow* wnd = mWindowInteractions->GetWindowThatContainsPoint(mMouseMotion);
         if (!wnd) {
@@ -78,19 +80,19 @@ akInputEvent* WindowManager::ParseSDLEvent(SDL_Event* evt)
         }
         else {
             mouseEvent->SetLocation(mMouseMotion);
-            mouseEvent->SetWindow((akWindow*)wnd->Window);
+            mouseEvent->SetWindow((Window*)wnd->Window);
 
             /* Calculating the location in window */
-            akPoint locationInWindow;
+            Point locationInWindow;
             locationInWindow.x = mMouseMotion.x - wnd->GetRect().location.x - wnd->GetLeftMargin();
             locationInWindow.y = mMouseMotion.y - wnd->GetRect().location.y - wnd->GetTopMargin();
             mouseEvent->SetLocationInWindow(locationInWindow);
 
             if (evt->wheel.y > 0) {
-                mouseEvent->SetMouseEvent(akMOUSE_EVENT_WHEEL_UP);
+                mouseEvent->SetMouseEvent(WT_MOUSE_EVENT_WHEEL_UP);
             }
             else {
-                mouseEvent->SetMouseEvent(akMOUSE_EVENT_WHEEL_DOWN);
+                mouseEvent->SetMouseEvent(WT_MOUSE_EVENT_WHEEL_DOWN);
             }
 
             return mouseEvent;
@@ -101,8 +103,8 @@ akInputEvent* WindowManager::ParseSDLEvent(SDL_Event* evt)
     else if (evt->type == SDL_MOUSEBUTTONDOWN) {
         mouseButtonPressed = true;
 
-        mouseEvent = new akMouseEvent();
-        akPoint location = akPoint(evt->motion.x, evt->motion.y);
+        mouseEvent = new MouseEvent();
+        Point location = Point(evt->motion.x, evt->motion.y);
 
         BaseWindow* wnd = mWindowInteractions->GetWindowThatContainsPoint(location);
         if (!wnd) {
@@ -110,20 +112,20 @@ akInputEvent* WindowManager::ParseSDLEvent(SDL_Event* evt)
         }
         else {
             mouseEvent->SetLocation(location);
-            mouseEvent->SetWindow((akWindow*)wnd->Window);
+            mouseEvent->SetWindow((Window*)wnd->Window);
 
             /* Calculating the location in window */
-            akPoint locationInWindow;
+            Point locationInWindow;
             locationInWindow.x = location.x - wnd->GetRect().location.x - wnd->GetLeftMargin();
             locationInWindow.y = location.y - wnd->GetRect().location.y - wnd->GetTopMargin();
             mouseEvent->SetLocationInWindow(locationInWindow);
 
-            mouseEvent->SetMouseEvent(akMOUSE_EVENT_PRESS);
+            mouseEvent->SetMouseEvent(WT_MOUSE_EVENT_PRESS);
 
             if (evt->button.button == SDL_BUTTON_LEFT)
-                mouseEvent->SetButton(akMOUSE_BUTTON_LEFT);
+                mouseEvent->SetButton(WT_MOUSE_BUTTON_LEFT);
             else if (evt->button.button == SDL_BUTTON_RIGHT)
-                mouseEvent->SetButton(akMOUSE_BUTTON_RIGHT);
+                mouseEvent->SetButton(WT_MOUSE_BUTTON_RIGHT);
 
             return mouseEvent;
         }
@@ -132,8 +134,8 @@ akInputEvent* WindowManager::ParseSDLEvent(SDL_Event* evt)
     else if (evt->type == SDL_MOUSEBUTTONUP) {
         mouseButtonPressed = false;
 
-        mouseEvent = new akMouseEvent();
-        akPoint location = akPoint(evt->motion.x, evt->motion.y);
+        mouseEvent = new MouseEvent();
+        Point location = Point(evt->motion.x, evt->motion.y);
 
         BaseWindow* wnd = mWindowInteractions->GetWindowThatContainsPoint(location);
         if (!wnd) {
@@ -141,27 +143,27 @@ akInputEvent* WindowManager::ParseSDLEvent(SDL_Event* evt)
         }
         else {
             mouseEvent->SetLocation(location);
-            mouseEvent->SetWindow((akWindow*)wnd->Window);
+            mouseEvent->SetWindow((Window*)wnd->Window);
 
             /* Calculating the location in window */
-            akPoint locationInWindow;
+            Point locationInWindow;
             locationInWindow.x = location.x - wnd->GetRect().location.x - wnd->GetLeftMargin();
             locationInWindow.y = location.y - wnd->GetRect().location.y - wnd->GetTopMargin();
             mouseEvent->SetLocationInWindow(locationInWindow);
 
-            mouseEvent->SetMouseEvent(akMOUSE_EVENT_RELEASE);
+            mouseEvent->SetMouseEvent(WT_MOUSE_EVENT_RELEASE);
 
             if (evt->button.button == SDL_BUTTON_LEFT)
-                mouseEvent->SetButton(akMOUSE_BUTTON_LEFT);
+                mouseEvent->SetButton(WT_MOUSE_BUTTON_LEFT);
             else if (evt->button.button == SDL_BUTTON_RIGHT)
-                mouseEvent->SetButton(akMOUSE_BUTTON_RIGHT);
+                mouseEvent->SetButton(WT_MOUSE_BUTTON_RIGHT);
             return mouseEvent;
         }
         return NULL;
     }
     else if (evt->type == SDL_MOUSEMOTION) {
-        mouseEvent = new akMouseEvent();
-        akPoint location = akPoint(evt->motion.x, evt->motion.y);
+        mouseEvent = new MouseEvent();
+        Point location = Point(evt->motion.x, evt->motion.y);
         mMouseMotion = location;
 
         BaseWindow* wnd = mWindowInteractions->GetWindowThatContainsPoint(location);
@@ -170,19 +172,19 @@ akInputEvent* WindowManager::ParseSDLEvent(SDL_Event* evt)
         }
         else {
             mouseEvent->SetLocation(location);
-            mouseEvent->SetWindow((akWindow*)wnd->Window);
+            mouseEvent->SetWindow((Window*)wnd->Window);
 
             /* Calculating the location in window */
-            akPoint locationInWindow;
+            Point locationInWindow;
             locationInWindow.x = location.x - wnd->GetRect().location.x - wnd->GetLeftMargin();
             locationInWindow.y = location.y - wnd->GetRect().location.y - wnd->GetTopMargin();
             mouseEvent->SetLocationInWindow(locationInWindow);
 
             if (mouseButtonPressed)
-                mouseEvent->SetMouseEvent(akMOUSE_EVENT_DRAG);
+                mouseEvent->SetMouseEvent(WT_MOUSE_EVENT_DRAG);
             else
-                mouseEvent->SetMouseEvent(akMOUSE_EVENT_MOVE);
-            mouseEvent->SetButton(akMOUSE_BUTTON_NONE);
+                mouseEvent->SetMouseEvent(WT_MOUSE_EVENT_MOVE);
+            mouseEvent->SetButton(WT_MOUSE_BUTTON_NONE);
             return mouseEvent;
         }
         return NULL;
@@ -223,42 +225,42 @@ void WindowManager::ProcessEvents()
     if (mWindows.empty())
         return;
 
-    akInputEvent* inputEvent = ParseSDLEvent(&evt);
+    InputEvent* inputEvent = ParseSDLEvent(&evt);
 
     if (inputEvent) {
         inputEvent->Reserved = &evt;
 
-        if (inputEvent->GetType() == akINPUT_EVENT_MOUSE) // All mouse events
+        if (inputEvent->GetType() == WT_INPUT_EVENT_MOUSE) // All mouse events
         {
-            akMouseEvent* mouseEvent = (akMouseEvent*)inputEvent;
+            MouseEvent* mouseEvent = (MouseEvent*)inputEvent;
 
-            akPoint locationInWindow = mouseEvent->GetLocationInWindow();
-            akRect contentRect = mouseEvent->GetWindow()->GetContentRect();
+            Point locationInWindow = mouseEvent->GetLocationInWindow();
+            Rect contentRect = mouseEvent->GetWindow()->GetContentRect();
             if (Utility::RectContainsPoint(contentRect, locationInWindow)) {
-                if (mouseEvent->GetMouseEvent() == akMOUSE_EVENT_MOVE) // Only mouse move events
+                if (mouseEvent->GetMouseEvent() == WT_MOUSE_EVENT_MOVE) // Only mouse move events
                 {
                     if (mWindows.size() > 0) {
                         BaseWindow* topLevelWindow = mWindowInteractions->GetTopLevelWindow();
-                        akWindow* wnd = (akWindow*)topLevelWindow->Window;
+                        Window* wnd = (Window*)topLevelWindow->Window;
                         if (wnd->CanReceiveMouseMotionEvents())
                             wnd->DispatchInputEvent(mouseEvent);
 
-                        akWindow* intersectingWindow = mouseEvent->GetWindow();
+                        Window* intersectingWindow = mouseEvent->GetWindow();
                         if (intersectingWindow) {
                             if (intersectingWindow->CanReceiveMouseMotionEvents())
                                 intersectingWindow->DispatchInputEvent(mouseEvent);
                         }
                     }
                 }
-                else if (mouseEvent->GetMouseEvent() == akMOUSE_EVENT_DRAG) {
+                else if (mouseEvent->GetMouseEvent() == WT_MOUSE_EVENT_DRAG) {
                     if (mWindows.size() > 0) {
                         BaseWindow* topLevelWindow = mWindowInteractions->GetTopLevelWindow();
-                        akWindow* wnd = (akWindow*)topLevelWindow->Window;
+                        Window* wnd = (Window*)topLevelWindow->Window;
                         wnd->DispatchInputEvent(mouseEvent);
                     }
                 }
                 else { // Any other mouse event
-                    akWindow* intersectingWindow = mouseEvent->GetWindow();
+                    Window* intersectingWindow = mouseEvent->GetWindow();
                     if (intersectingWindow) {
                         //printf("another mouse event will be dispatched...\n");
                         intersectingWindow->DispatchInputEvent(mouseEvent);
@@ -266,15 +268,15 @@ void WindowManager::ProcessEvents()
                 }
             }
         }
-        else if (inputEvent->GetType() == akINPUT_EVENT_KEY) // All key events
+        else if (inputEvent->GetType() == WT_INPUT_EVENT_KEY) // All key events
         {
             if (mWindows.size() == 0)
                 return;
 
-            akKeyEvent* keyEvent = (akKeyEvent*)inputEvent;
+            KeyEvent* keyEvent = (KeyEvent*)inputEvent;
             BaseWindow* topLevelWindow = mWindowInteractions->GetTopLevelWindow();
             if (topLevelWindow) {
-                akWindow* wnd = (akWindow*)topLevelWindow->Window;
+                Window* wnd = (Window*)topLevelWindow->Window;
                 wnd->DispatchInputEvent(keyEvent);
                 //printf("a key event was dispatched to '%s'\n", wnd->GetTitle().c_str());
             }
@@ -319,7 +321,7 @@ void WindowManager::ComposeWindows()
         BaseWindow* wnd = mWindows.at(i);
         if (wnd->IsVisible()) {
             SDL_Rect rect;
-            akRect wndRect = wnd->GetRect();
+            Rect wndRect = wnd->GetRect();
             rect.x = wndRect.location.x;
             rect.y = wndRect.location.y;
             rect.w = wndRect.size.width;
@@ -339,7 +341,7 @@ vector<BaseWindow*> WindowManager::GetWindows()
     return mWindows;
 }
 
-akSize WindowManager::GetResolution()
+Size WindowManager::GetResolution()
 {
     return mResolution;
 }
@@ -347,4 +349,6 @@ akSize WindowManager::GetResolution()
 WindowManager::~WindowManager()
 {
     SDL_Quit();
+}
+
 }

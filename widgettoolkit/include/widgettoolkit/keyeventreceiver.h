@@ -3,11 +3,15 @@
 #include <widgettoolkit/export.h>
 #include <widgettoolkit/keyevent.h>
 
-class akView;
+namespace Wt {
 
-class APPKIT_API akKeyEventReceiver {
+class View;
+
+class WIDGETTOOLKIT_EXPORT KeyEventReceiver {
 public:
-    virtual void KeyPress(akView* sender, akKeyEvent* event) = 0;
-    virtual void KeyRelease(akView* sender, akKeyEvent* event) = 0;
-    virtual void TextInput(akView* sender, akKeyEvent* event) = 0;
+    virtual void KeyPress(View* sender, KeyEvent* event) = 0;
+    virtual void KeyRelease(View* sender, KeyEvent* event) = 0;
+    virtual void TextInput(View* sender, KeyEvent* event) = 0;
 };
+
+}

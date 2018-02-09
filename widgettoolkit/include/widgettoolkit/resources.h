@@ -6,6 +6,8 @@
 #define IMAGE_RESOURCE_COUNT 48
 #define FONT_RESOURCE_COUNT 1
 
+namespace Wt {
+
 class Resources {
 public:
     static void Load();
@@ -26,7 +28,7 @@ enum ResourceType {
     RESOURCE_TYPE_FONT
 };
 
-enum ImageReourceID {
+enum ImageReourceId {
     WIN_TITLE_BAR_RIGHT,
     WIN_TITLE_BAR_LEFT,
     WIN_TITLE_BAR_CENTER,
@@ -81,6 +83,8 @@ enum ImageReourceID {
     RADIOBUTTON_STATE3
 };
 
-enum FontResourceID {
+enum FontResourceId {
     DEFAULT_FONT
 };
+
+}

@@ -1,21 +1,23 @@
 #include <widgettoolkit/application.h>
 #include <widgettoolkit/windowmanager.h>
 
+namespace Wt {
+
 WindowManager* TheWindowManager = NULL;
 
-akApplication::akApplication(const string& name)
+Application::Application(const string& name)
 {
-    SetClassName("akApplication");
-    TheWindowManager = new WindowManager(akSize(800, 600), name);
+    SetClassName("Application");
+    TheWindowManager = new WindowManager(Size(800, 600), name);
 }
 
-akApplication::akApplication(akSize size, const string& name)
+Application::Application(Size size, const string& name)
 {
-    SetClassName("akApplication");
+    SetClassName("Application");
     TheWindowManager = new WindowManager(size, name);
 }
 
-int akApplication::Run()
+int Application::Run()
 {
     bool run = true;
 
@@ -24,4 +26,6 @@ int akApplication::Run()
     } while (run);
 
     return 0;
+}
+
 }

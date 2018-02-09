@@ -3,21 +3,49 @@
 #include <widgettoolkit/legacytools.h>
 #include <widgettoolkit/resources.h>
 
-/* *********************************
- * TextBox Object Oriented Wrapper *
- ***********************************/
+typedef struct TextBox TextBox;
+struct TextBox {
+	SDL_Surface* textSurface;
+	SDL_Rect textPosition, textBgPosition, cursorPosition;
+	SDL_Surface *bgSurface, *cursorSurface, *bg;
+	int blitInitialPosition, count, cursorIndex, dontDeleteChar, width, height, x, y, fontSize;
+	char *text, *textSelectionBuffer, *text1, *text2, *text3;
+	TTF_Font* font;
+	SDL_Color bgColor, textColor;
+	SDL_Surface* destSurface;
+	int focus;
+	long int id;
+};
 
-akTextBox::akTextBox(akRect rect, string text, akView* parent)
-    : akControl(rect, NULL)
+void TextBox_Delete(TextBox* textbox);
+TextBox* TextBox_Init(int x, int y, int width, int height,
+	TTF_Font* font, SDL_Color bgColor, SDL_Color textColor, SDL_Color cursorColor);
+void TextBox_Draw(TextBox* textbox);
+void __TextBox_Draw(TextBox* textbox, int updateWnd);
+void TextBox_DrawBorder(TextBox* textbox);
+int TextBox_OnMouseButtonDown(TextBox* textbox, int mouse_x, int mouse_y);
+void TextBox_OnKeyDown(TextBox* textbox, int32_t scancode, int32_t keycode, int32_t keymod);
+void TextBox_OnTextInput(TextBox* textbox, std::string text);
+void TextBox_AppendText(TextBox* textbox, char* text);
+void TextBox_SetText(TextBox* textbox, char* text);
+char* TextBox_GetText(TextBox* textbox);
+void TextBox_SetCursor(TextBox* textbox, int index);
+void TextBox_SetFocus(TextBox* textbox);
+void TextBox_RemoveFocus(TextBox* textbox);
+
+namespace Wt {
+
+TextBox::TextBox(Rect rect, string text, View* parent)
+    : Control(rect, NULL)
 {
-    SetClassName("akTextBox");
+    SetClassName("TextBox");
     mText = text;
     AddKeyEventReceiver(this);
     AddMouseEventReceiver(this);
     AddPainter(this);
     AddViewNotificationReceiver(this);
 
-    akRect viewRect = GetRect();
+    Rect viewRect = GetRect();
     SDL_Color bgColor, textColor, cursorColor;
     bgColor.r = 255;
     bgColor.g = 255;
@@ -31,104 +59,123 @@ akTextBox::akTextBox(akRect rect, string text, akView* parent)
     mTextBox = TextBox_Init(viewRect.location.x, viewRect.location.y, viewRect.size.width, viewRect.size.height,
         Resources::GetFontResource(DEFAULT_FONT), bgColor, textColor, cursorColor);
 
-    TextBox_SetText(mTextBox, (char*)text.c_str());
+	::TextBox *textBox = (::TextBox*)mTextBox;
+    TextBox_SetText(textBox, (char*)text.c_str());
 }
 
-string akTextBox::GetText()
+string TextBox::GetText()
 {
-    string* str = new string(mTextBox->text);
+	::TextBox *textBox = (::TextBox*)mTextBox;
+
+    string* str = new string(textBox->text);
     return *str;
 }
 
-void akTextBox::SetText(string text)
+void TextBox::SetText(string text)
 {
-    TextBox_SetText(mTextBox, (char*)(text.c_str()));
+	::TextBox *textBox = (::TextBox*)mTextBox;
+
+    TextBox_SetText(textBox, (char*)(text.c_str()));
     GetWindow()->Repaint();
 }
 
-void akTextBox::KeyPress(akView* sender, akKeyEvent* event)
+void TextBox::KeyPress(View* sender, KeyEvent* event)
 {
+	::TextBox *textBox = (::TextBox*)mTextBox;
+
     this->InvokeActionReceivers(this);
-    TextBox_OnKeyDown(mTextBox, event->GetScancode(), event->GetKeycode(), event->GetKeymod());
+    TextBox_OnKeyDown(textBox, event->GetScancode(), event->GetKeycode(), event->GetKeymod());
     GetWindow()->Repaint();
 }
 
-void akTextBox::TextInput(akView* sender, akKeyEvent* event)
+void TextBox::TextInput(View* sender, KeyEvent* event)
 {
+	::TextBox *textBox = (::TextBox*)mTextBox;
+
     this->InvokeActionReceivers(this);
-    TextBox_OnTextInput(mTextBox, event->GetText());
+    TextBox_OnTextInput(textBox, event->GetText());
     GetWindow()->Repaint();
 }
 
-void akTextBox::KeyRelease(akView* sender, akKeyEvent* event)
+void TextBox::KeyRelease(View* sender, KeyEvent* event)
 {
 }
 
-void akTextBox::MousePress(akView* sender, akMouseEvent* event)
+void TextBox::MousePress(View* sender, MouseEvent* event)
 {
     /*akView *oldFirstResponder = GetWindow()->GetFirstResponder();
 	if (oldFirstResponder) {
-		if (oldFirstResponder->GetClassName().compare("akTextBox") == 0) {
-			akTextBox *textbox = (akTextBox*)oldFirstResponder;
+		if (oldFirstResponder->GetClassName().compare("TextBox") == 0) {
+			TextBox *textbox = (TextBox*)oldFirstResponder;
 			TextBox_RemoveFocus(textbox->mTextBox);
 		}
 	*/
+	::TextBox *textBox = (::TextBox*)mTextBox;
+
     GetWindow()->SetFirstResponder(this);
-    TextBox_SetFocus(mTextBox);
-    TextBox_OnMouseButtonDown(mTextBox, event->GetLocationInWindow().x, event->GetLocationInWindow().y);
+    TextBox_SetFocus(textBox);
+    TextBox_OnMouseButtonDown((::TextBox*)mTextBox, event->GetLocationInWindow().x, event->GetLocationInWindow().y);
     GetWindow()->Repaint();
 }
 
-void akTextBox::MouseRelease(akView* sender, akMouseEvent* event)
+void TextBox::MouseRelease(View* sender, MouseEvent* event)
 {
 }
 
-void akTextBox::MouseMove(akView* sender, akMouseEvent* event)
+void TextBox::MouseMove(View* sender, MouseEvent* event)
 {
 }
 
-void akTextBox::MouseDrag(akView* sender, akMouseEvent* event)
+void TextBox::MouseDrag(View* sender, MouseEvent* event)
 {
 }
 
-void akTextBox::MouseWheelUp(akView* sender, akMouseEvent* event)
+void TextBox::MouseWheelUp(View* sender, MouseEvent* event)
 {
 }
 
-void akTextBox::MouseWheelDown(akView* sender, akMouseEvent* event)
+void TextBox::MouseWheelDown(View* sender, MouseEvent* event)
 {
 }
 
-void akTextBox::Paint(akView* view, SDL_Surface* destination)
+void TextBox::Paint(View* view, SDL_Surface* destination)
 {
+	::TextBox *textBox = (::TextBox*)mTextBox;
+
     SDL_Rect p;
     p.x = 0;
     p.y = 0;
-    SDL_BlitSurface(mTextBox->bgSurface, NULL, mTextBox->destSurface, &p);
-    LegacyTools::Blit(mTextBox->textSurface, mTextBox->blitInitialPosition, 0, mTextBox->width, mTextBox->height, mTextBox->destSurface, 0, 0);
+    SDL_BlitSurface(textBox->bgSurface, NULL, textBox->destSurface, &p);
+    LegacyTools::Blit(textBox->textSurface, textBox->blitInitialPosition, 0, textBox->width, textBox->height, textBox->destSurface, 0, 0);
 
     SDL_Rect dstrect;
-    dstrect.x = mTextBox->x - 2;
-    dstrect.y = mTextBox->y - 2;
-    SDL_BlitSurface(mTextBox->bg, NULL, destination, &dstrect);
-    dstrect.x = mTextBox->x;
-    dstrect.y = mTextBox->y;
-    SDL_BlitSurface(mTextBox->destSurface, NULL, destination, &dstrect);
+    dstrect.x = textBox->x - 2;
+    dstrect.y = textBox->y - 2;
+    SDL_BlitSurface(textBox->bg, NULL, destination, &dstrect);
+    dstrect.x = textBox->x;
+    dstrect.y = textBox->y;
+    SDL_BlitSurface(textBox->destSurface, NULL, destination, &dstrect);
 }
 
-void akTextBox::ViewWillResignFirstResponder()
+void TextBox::ViewWillResignFirstResponder()
 {
-    TextBox_DrawBorder(mTextBox);
-    TextBox_RemoveFocus(mTextBox);
+	::TextBox *textBox = (::TextBox*)mTextBox;
+
+    TextBox_DrawBorder(textBox);
+    TextBox_RemoveFocus(textBox);
     GetWindow()->Repaint();
 }
 
-void akTextBox::ViewWillBecameFirstResponder()
+void TextBox::ViewWillBecameFirstResponder()
 {
-    akColor focusColor = GetFocusColor();
-    SDL_FillRect(mTextBox->bg, NULL, SDL_MapRGB(mTextBox->bg->format, focusColor.r, focusColor.g, focusColor.b));
-    TextBox_SetFocus(mTextBox);
+	::TextBox *textBox = (::TextBox*)mTextBox;
+
+    Color focusColor = GetFocusColor();
+    SDL_FillRect(textBox->bg, NULL, SDL_MapRGB(textBox->bg->format, focusColor.r, focusColor.g, focusColor.b));
+    TextBox_SetFocus(textBox);
     GetWindow()->Repaint();
+}
+
 }
 
 /* ******************************************************
@@ -155,7 +202,7 @@ void TextBox_RemoveFocus(TextBox* textbox)
     p.y = 0;
     SDL_BlitSurface(textbox->bgSurface, NULL, textbox->destSurface, &p);
     textbox->textSurface = TTF_RenderText_Blended(textbox->font, textbox->text, textbox->textColor);
-    LegacyTools::Blit(textbox->textSurface, textbox->blitInitialPosition, 0, textbox->width, textbox->height, textbox->destSurface, 0, 0);
+	Wt::LegacyTools::Blit(textbox->textSurface, textbox->blitInitialPosition, 0, textbox->width, textbox->height, textbox->destSurface, 0, 0);
     //MDDrawSurface(textbox->destSurface,textbox->destWindow,textbox->x,textbox->y,0);
 }
 
@@ -324,7 +371,7 @@ void TextBox_Draw(TextBox* textbox)
     p.x = 0;
     p.y = 0;
     SDL_BlitSurface(textbox->bgSurface, NULL, textbox->destSurface, &p);
-    LegacyTools::Blit(textbox->textSurface, textbox->blitInitialPosition, 0, textbox->width, textbox->height, textbox->destSurface, 0, 0);
+	Wt::LegacyTools::Blit(textbox->textSurface, textbox->blitInitialPosition, 0, textbox->width, textbox->height, textbox->destSurface, 0, 0);
     /* To be updated */
     //MDDrawSurface(textbox->bg,textbox->destWindow,textbox->x-2,textbox->y-2,0);
     //MDDrawSurface(textbox->destSurface,textbox->destWindow,textbox->x,textbox->y,1);
@@ -341,7 +388,7 @@ void __TextBox_Draw(TextBox* textbox, int updateWnd)
     p.x = 0;
     p.y = 0;
     SDL_BlitSurface(textbox->bgSurface, NULL, textbox->destSurface, &p);
-    LegacyTools::Blit(textbox->textSurface, textbox->blitInitialPosition, 0, textbox->width, textbox->height, textbox->destSurface, 0, 0);
+	Wt::LegacyTools::Blit(textbox->textSurface, textbox->blitInitialPosition, 0, textbox->width, textbox->height, textbox->destSurface, 0, 0);
     /* To be updated */
     //MDDrawSurface(textbox->bg,textbox->destWindow,textbox->x-2,textbox->y-2,0);
     //MDDrawSurface(textbox->destSurface,textbox->destWindow,textbox->x,textbox->y,updateWnd);
@@ -428,7 +475,7 @@ int TextBox_OnMouseButtonDown(TextBox* textbox, int mouse_x, int mouse_y)
 
             SDL_BlitSurface(textbox->cursorSurface, NULL, textbox->textSurface, &textbox->cursorPosition);
 
-            LegacyTools::Blit(textbox->textSurface, textbox->blitInitialPosition, 0, textbox->width, textbox->width, textbox->destSurface, 0, 0);
+	        Wt::LegacyTools::Blit(textbox->textSurface, textbox->blitInitialPosition, 0, textbox->width, textbox->width, textbox->destSurface, 0, 0);
             /* To be updated */
             //MDDrawSurface(textbox->destSurface,textbox->destWindow,textbox->x,textbox->y,1);
             //SDL_Flip(textbox->destSurface);
@@ -505,7 +552,7 @@ void TextBox_DeleteChar(TextBox* textbox, unsigned int unicode, int sym)
                         textbox->textSurface = TTF_RenderText_Blended(textbox->font, textbox->text, textbox->textColor);
 
                         SDL_BlitSurface(textbox->cursorSurface, NULL, textbox->textSurface, &textbox->cursorPosition);
-                        LegacyTools::Blit(textbox->textSurface, textbox->blitInitialPosition, 0, textbox->width, textbox->height, textbox->destSurface, 0, 0);
+	                    Wt::LegacyTools::Blit(textbox->textSurface, textbox->blitInitialPosition, 0, textbox->width, textbox->height, textbox->destSurface, 0, 0);
                         //DrawSurface(textbox->destSurface,textbox->destWindow,textbox->x,textbox->y,1);
                     }
                 }
@@ -549,7 +596,7 @@ void TextBox_DeleteChar(TextBox* textbox, unsigned int unicode, int sym)
                         textbox->textSurface = TTF_RenderText_Blended(textbox->font, textbox->text, textbox->textColor);
 
                         SDL_BlitSurface(textbox->cursorSurface, NULL, textbox->textSurface, &textbox->cursorPosition);
-                        LegacyTools::Blit(textbox->textSurface, textbox->blitInitialPosition, 0, textbox->width, textbox->height, textbox->destSurface, 0, 0);
+	                    Wt::LegacyTools::Blit(textbox->textSurface, textbox->blitInitialPosition, 0, textbox->width, textbox->height, textbox->destSurface, 0, 0);
                         //DrawSurface(textbox->destSurface,textbox->destWindow,textbox->x,textbox->y,1);
                         //SDL_Flip(textbox->destSurface);
                     }
@@ -617,7 +664,7 @@ void TextBox_DeleteChar(TextBox* textbox, unsigned int unicode, int sym)
                     SDL_BlitSurface(textbox->cursorSurface, NULL, textbox->textSurface, &textbox->cursorPosition);
                 }
 
-                LegacyTools::Blit(textbox->textSurface, textbox->blitInitialPosition, 0, textbox->width, textbox->height, textbox->destSurface, 0, 0);
+	            Wt::LegacyTools::Blit(textbox->textSurface, textbox->blitInitialPosition, 0, textbox->width, textbox->height, textbox->destSurface, 0, 0);
                 //DrawSurface(textbox->destSurface,textbox->destWindow,textbox->x,textbox->y,1);
                 //SDL_Flip(textbox->destSurface);
             }
@@ -684,7 +731,7 @@ void TextBox_WriteChar(TextBox* textbox, unsigned int unicode, int sym)
 
     SDL_BlitSurface(textbox->cursorSurface, NULL, textbox->textSurface, &textbox->cursorPosition);
 
-    LegacyTools::Blit(textbox->textSurface, textbox->blitInitialPosition, 0, textbox->width, textbox->height, textbox->destSurface, 0, 0);
+	Wt::LegacyTools::Blit(textbox->textSurface, textbox->blitInitialPosition, 0, textbox->width, textbox->height, textbox->destSurface, 0, 0);
     //DrawSurface(textbox->destSurface,textbox->destWindow,textbox->x,textbox->y,1);
     //SDL_Flip(textbox->destSurface);
 }
@@ -732,7 +779,7 @@ void TextBox_MoveCursorRight(TextBox* textbox, unsigned int unicode, int sym)
         textbox->textSurface = TTF_RenderText_Blended(textbox->font, textbox->text, textbox->textColor);
 
         SDL_BlitSurface(textbox->cursorSurface, NULL, textbox->textSurface, &textbox->cursorPosition);
-        LegacyTools::Blit(textbox->textSurface, textbox->blitInitialPosition, 0, textbox->width, textbox->height, textbox->destSurface, 0, 0);
+	    Wt::LegacyTools::Blit(textbox->textSurface, textbox->blitInitialPosition, 0, textbox->width, textbox->height, textbox->destSurface, 0, 0);
         //DrawSurface(textbox->destSurface,textbox->destWindow,textbox->x,textbox->y,1);
         //SDL_Flip(textbox->destSurface);
     }
@@ -784,7 +831,7 @@ void TextBox_MoveCursorLeft(TextBox* textbox, unsigned int unicode, int sym)
         textbox->textSurface = TTF_RenderText_Blended(textbox->font, textbox->text, textbox->textColor);
 
         SDL_BlitSurface(textbox->cursorSurface, NULL, textbox->textSurface, &textbox->cursorPosition);
-        LegacyTools::Blit(textbox->textSurface, textbox->blitInitialPosition, 0, textbox->width, textbox->height, textbox->destSurface, 0, 0);
+	    Wt::LegacyTools::Blit(textbox->textSurface, textbox->blitInitialPosition, 0, textbox->width, textbox->height, textbox->destSurface, 0, 0);
         //DrawSurface(textbox->destSurface,textbox->destWindow,textbox->x,textbox->y,1);
         //SDL_Flip(textbox->destSurface);
     }

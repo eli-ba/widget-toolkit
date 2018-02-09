@@ -3,9 +3,13 @@
 #include <widgettoolkit/export.h>
 #include <SDL.h>
 
-class akView;
+namespace Wt {
 
-class APPKIT_API akPainter {
+class View;
+
+class WIDGETTOOLKIT_EXPORT Painter {
 public:
-    virtual void Paint(akView* view, SDL_Surface* destination) = 0;
+    virtual void Paint(View* view, SDL_Surface* destination) = 0;
 };
+
+}

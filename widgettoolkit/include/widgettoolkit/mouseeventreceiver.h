@@ -3,14 +3,18 @@
 #include <widgettoolkit/export.h>
 #include <widgettoolkit/mouseevent.h>
 
-class akView;
+namespace Wt {
 
-class APPKIT_API akMouseEventReceiver {
+class View;
+
+class WIDGETTOOLKIT_EXPORT MouseEventReceiver {
 public:
-    virtual void MousePress(akView* sender, akMouseEvent* event) = 0;
-    virtual void MouseRelease(akView* sender, akMouseEvent* event) = 0;
-    virtual void MouseMove(akView* sender, akMouseEvent* event) = 0;
-    virtual void MouseDrag(akView* sender, akMouseEvent* event) = 0;
-    virtual void MouseWheelUp(akView* sender, akMouseEvent* event) = 0;
-    virtual void MouseWheelDown(akView* sender, akMouseEvent* event) = 0;
+    virtual void MousePress(View* sender, MouseEvent* event) = 0;
+    virtual void MouseRelease(View* sender, MouseEvent* event) = 0;
+    virtual void MouseMove(View* sender, MouseEvent* event) = 0;
+    virtual void MouseDrag(View* sender, MouseEvent* event) = 0;
+    virtual void MouseWheelUp(View* sender, MouseEvent* event) = 0;
+    virtual void MouseWheelDown(View* sender, MouseEvent* event) = 0;
 };
+
+}

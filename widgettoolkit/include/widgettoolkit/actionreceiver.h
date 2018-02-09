@@ -2,9 +2,13 @@
 
 #include <widgettoolkit/export.h>
 
-class akControl;
+namespace Wt {
 
-class APPKIT_API akActionReceiver {
+class Control;
+
+class WIDGETTOOLKIT_EXPORT ActionReceiver {
 public:
-    virtual void ActionPerformed(akControl* sender) = 0;
+	virtual void ActionPerformed(Control* sender) = 0;
 };
+
+}

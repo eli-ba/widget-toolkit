@@ -1,5 +1,7 @@
 #include <widgettoolkit/legacytools.h>
 
+namespace Wt {
+
 void LegacyTools::Blit(SDL_Surface* source, int x1, int y1, int w, int h, SDL_Surface* dest, int x2, int y2)
 {
     SDL_Rect s = Rect(x1, y1, w, h);
@@ -19,4 +21,6 @@ SDL_Rect LegacyTools::Rect(int x, int y, int w, int h)
     r.h = h;
 
     return r;
+}
+
 }

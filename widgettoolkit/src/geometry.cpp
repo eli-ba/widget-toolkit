@@ -1,30 +1,32 @@
 #include <widgettoolkit/geometry.h>
 
-akPoint::akPoint()
+namespace Wt {
+
+Point::Point()
 {
     this->x = 0;
     this->y = 0;
 }
 
-akPoint::akPoint(int x, int y)
+Point::Point(int x, int y)
 {
     this->x = x;
     this->y = y;
 }
 
-akSize::akSize()
+Size::Size()
 {
     this->width = 0;
     this->height = 0;
 }
 
-akSize::akSize(int width, int height)
+Size::Size(int width, int height)
 {
     this->width = width;
     this->height = height;
 }
 
-akRect::akRect()
+Rect::Rect()
 {
     this->location.x = 0;
     this->location.y = 0;
@@ -32,7 +34,7 @@ akRect::akRect()
     this->size.height = 0;
 }
 
-akRect::akRect(int x, int y, int width, int height)
+Rect::Rect(int x, int y, int width, int height)
 {
     this->location.x = x;
     this->location.y = y;
@@ -40,7 +42,7 @@ akRect::akRect(int x, int y, int width, int height)
     this->size.height = height;
 }
 
-akRect::akRect(akPoint location, akSize size)
+Rect::Rect(Point location, Size size)
 {
     this->location = location;
     this->size = size;
@@ -85,3 +87,5 @@ akRect::akRect(akPoint location, akSize size)
 //
 //	return rect;
 //}
+
+}

@@ -14,51 +14,55 @@
 #include <widgettoolkit/types.h>
 #include <vector>
 
-class akWindow;
+namespace Wt {
+
+class Window;
 
 using namespace std;
 
-class APPKIT_API akView : public akObject {
+class WIDGETTOOLKIT_EXPORT View : public Object {
 public:
-    akView();
-    akView(akRect rect, akView* parent = NULL);
-    void SetRect(akRect rect);
-    akRect GetRect();
-    void AddChild(akView* view);
-    akView* RemoveChild(akView* view);
+    View();
+    View(Rect rect, View* parent = NULL);
+    void SetRect(Rect rect);
+    Rect GetRect();
+    void AddChild(View* view);
+    View* RemoveChild(View* view);
     void Repaint();
-    akWindow* GetWindow();
-    void SetWindow(akWindow* wnd);
-    void AddPainter(akPainter* painter);
-    void RemovePainter(akPainter* painter);
-    void AddKeyEventReceiver(akKeyEventReceiver* receiver);
-    void RemoveKeyEventReceiver(akKeyEventReceiver* receiver);
-    void AddMouseEventReceiver(akMouseEventReceiver* receiver);
-    void RemoveMouseEventReceiver(akMouseEventReceiver* receiver);
-    void AddViewNotificationReceiver(akViewNotificationReceiver* receiver);
-    void RemoveViewNotificationReceiver(akViewNotificationReceiver* receiver);
-    void InvokeKeyEventReceivers(akKeyEvent* event);
-    void InvokeMouseEventReceivers(akMouseEvent* event);
+    Window* GetWindow();
+    void SetWindow(Window* wnd);
+    void AddPainter(Painter* painter);
+    void RemovePainter(Painter* painter);
+    void AddKeyEventReceiver(KeyEventReceiver* receiver);
+    void RemoveKeyEventReceiver(KeyEventReceiver* receiver);
+    void AddMouseEventReceiver(MouseEventReceiver* receiver);
+    void RemoveMouseEventReceiver(MouseEventReceiver* receiver);
+    void AddViewNotificationReceiver(ViewNotificationReceiver* receiver);
+    void RemoveViewNotificationReceiver(ViewNotificationReceiver* receiver);
+    void InvokeKeyEventReceivers(KeyEvent* event);
+    void InvokeMouseEventReceivers(MouseEvent* event);
     void InvokeViewNotificationEventReceivers(int notification);
-    bool SendInputEvent(akInputEvent* evt);
+    bool SendInputEvent(InputEvent* evt);
     void SetTag(int tag);
     int GetTag();
-    static akColor GetFocusColor();
-    static akColor GetLostFocusColor();
-    static void SetFocusColor(akColor c);
-    static void SetLostFocusColor(akColor c);
-    virtual ~akView();
+    static Color GetFocusColor();
+    static Color GetLostFocusColor();
+    static void SetFocusColor(Color c);
+    static void SetLostFocusColor(Color c);
+    virtual ~View();
 
 private:
-    akRect mRect;
-    vector<akView*> mChildren;
-    akWindow* mWindow;
-    vector<akKeyEventReceiver*> mKeyEventReceivers;
-    vector<akMouseEventReceiver*> mMouseEventReceivers;
-    vector<akViewNotificationReceiver*> mViewNotificationReceivers;
-    vector<akPainter*> mPainters;
+    Rect mRect;
+    vector<View*> mChildren;
+    Window* mWindow;
+    vector<KeyEventReceiver*> mKeyEventReceivers;
+    vector<MouseEventReceiver*> mMouseEventReceivers;
+    vector<ViewNotificationReceiver*> mViewNotificationReceivers;
+    vector<Painter*> mPainters;
     int mTag;
-    akView* mParent;
-    static akColor mFocusColor;
-    static akColor mLostFocusColor;
+    View* mParent;
+    static Color mFocusColor;
+    static Color mLostFocusColor;
 };
+
+}

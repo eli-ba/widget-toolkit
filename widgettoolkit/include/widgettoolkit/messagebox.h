@@ -8,25 +8,28 @@
 #include <widgettoolkit/actionreceiver.h>
 #include <string>
 
+namespace Wt {
+
 using namespace std;
 
-class akMessageBoxActionsReceiver : public akActionReceiver {
+class MessageBoxActionsReceiver : public ActionReceiver {
 public:
-    akMessageBoxActionsReceiver(akWindow* wnd);
-    virtual void ActionPerformed(akControl* sender);
+    MessageBoxActionsReceiver(Window* wnd);
+    virtual void ActionPerformed(Control* sender);
 
 private:
-    akWindow* mWnd;
+    Window* mWnd;
 };
 
-class APPKIT_API akMessageBox {
+class WIDGETTOOLKIT_EXPORT MessageBox {
 public:
-    akMessageBox(string title, string message, akWindow* parent = NULL);
+    MessageBox(string title, string message, Window* parent = NULL);
 
-private:
 private:
     string mMessage;
-    akLabel* mLabel;
-    akPushButton* mButtonOK;
-    akWindow* mMsgWnd;
+    Label* mLabel;
+    PushButton* mButtonOK;
+    Window* mMsgWnd;
 };
+
+}

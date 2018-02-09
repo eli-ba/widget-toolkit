@@ -3,9 +3,11 @@
 #include <widgettoolkit/basewindow.h>
 #include <iostream>
 
+namespace Wt {
+
 extern WindowManager* TheWindowManager;
 
-akWindow::akWindow(akRect rect, string title, long style)
+Window::Window(Rect rect, string title, long style)
 {
     mFirstResponder = NULL;
     mCanReceiveMouseMotionEvents = false;
@@ -14,7 +16,7 @@ akWindow::akWindow(akRect rect, string title, long style)
     mBaseWindow->Window = this;
     TheWindowManager->AddWindow(mBaseWindow);
 
-    mContentView = new akView(GetContentRect());
+    mContentView = new View(GetContentRect());
     mContentView->SetWindow(this);
     mContentView->AddPainter(this);
     mContentView->SetTag(0);
@@ -27,29 +29,29 @@ akWindow::akWindow(akRect rect, string title, long style)
         Repaint();
 }
 
-void akWindow::Repaint()
+void Window::Repaint()
 {
     mContentView->Repaint();
     mBaseWindow->DrawContentSurface();
     TheWindowManager->ComposeWindows();
 }
 
-void akWindow::Paint(akView* view, SDL_Surface* destination)
+void Window::Paint(View* view, SDL_Surface* destination)
 {
     SDL_FillRect(destination, NULL, SDL_MapRGB(destination->format, mBgColor.r, mBgColor.g, mBgColor.b));
 }
 
-void akWindow::DispatchInputEvent(akInputEvent* evt)
+void Window::DispatchInputEvent(InputEvent* evt)
 {
     mContentView->SendInputEvent(evt);
 }
 
-akView* akWindow::GetFirstResponder()
+View* Window::GetFirstResponder()
 {
     return mFirstResponder;
 }
 
-void akWindow::SetFirstResponder(akView* view)
+void Window::SetFirstResponder(View* view)
 {
     if (mFirstResponder)
         mFirstResponder->InvokeViewNotificationEventReceivers(akVIEW_WILL_RESIGN_FIRSTRESPONDER);
@@ -57,55 +59,55 @@ void akWindow::SetFirstResponder(akView* view)
     view->InvokeViewNotificationEventReceivers(akVIEW_WILL_BECAME_FIRSTRESPONDER);
 }
 
-void akWindow::AddView(akView* view)
+void Window::AddView(View* view)
 {
     mContentView->AddChild(view);
     view->SetWindow(this);
     this->Repaint();
 }
 
-void akWindow::RemoveView(akView* view)
+void Window::RemoveView(View* view)
 {
     mContentView->RemoveChild(view);
     view->SetWindow(NULL);
     this->Repaint();
 }
 
-string akWindow::GetTitle()
+string Window::GetTitle()
 {
     return mBaseWindow->GetTitle();
 }
 
-akRect akWindow::GetRect()
+Rect Window::GetRect()
 {
     return mBaseWindow->GetRect();
 }
 
-akRect akWindow::GetContentRect()
+Rect Window::GetContentRect()
 {
     return mBaseWindow->GetContentRect();
 }
 
-void akWindow::SetRect(akRect rect)
+void Window::SetRect(Rect rect)
 {
     mBaseWindow->SetRect(rect);
     mContentView->SetRect(GetContentRect());
     Repaint();
 }
 
-void akWindow::SetContentRect(akRect rect)
+void Window::SetContentRect(Rect rect)
 {
     mBaseWindow->SetContentRect(rect);
     mContentView->SetRect(GetContentRect());
     Repaint();
 }
 
-bool akWindow::IsVisible()
+bool Window::IsVisible()
 {
     return mBaseWindow->IsVisible();
 }
 
-void akWindow::SetVisible(bool visible)
+void Window::SetVisible(bool visible)
 {
     mBaseWindow->SetVisible(visible);
     if (visible) {
@@ -113,63 +115,65 @@ void akWindow::SetVisible(bool visible)
     }
 }
 
-void akWindow::SetMaximizable(bool maximizable)
+void Window::SetMaximizable(bool maximizable)
 {
     mBaseWindow->SetMaximizable(maximizable);
 }
 
-void akWindow::SetMinimizable(bool minimizable)
+void Window::SetMinimizable(bool minimizable)
 {
     mBaseWindow->SetMinimizable(minimizable);
 }
 
-void akWindow::SetClosable(bool closable)
+void Window::SetClosable(bool closable)
 {
     mBaseWindow->SetClosable(closable);
 }
 
-bool akWindow::IsMaximizable()
+bool Window::IsMaximizable()
 {
     return mBaseWindow->IsMaximizable();
 }
 
-bool akWindow::IsMinimizable()
+bool Window::IsMinimizable()
 {
     return mBaseWindow->IsMinimizable();
 }
 
-bool akWindow::IsClosable()
+bool Window::IsClosable()
 {
     return mBaseWindow->IsClosable();
 }
 
-void akWindow::SetBackgroundColor(akColor color)
+void Window::SetBackgroundColor(Color color)
 {
     mBgColor = color;
     Repaint();
 }
 
-akColor akWindow::GetBackgroundColor()
+Color Window::GetBackgroundColor()
 {
     return mBgColor;
 }
 
-void akWindow::SetCanReceiveMouseMoveEvents(bool receive)
+void Window::SetCanReceiveMouseMoveEvents(bool receive)
 {
     mCanReceiveMouseMotionEvents = receive;
 }
 
-bool akWindow::CanReceiveMouseMotionEvents()
+bool Window::CanReceiveMouseMotionEvents()
 {
     return mCanReceiveMouseMotionEvents;
 }
 
-void akWindow::Close()
+void Window::Close()
 {
     mBaseWindow->SetNeedsToBeClosed();
 }
 
-akWindow::~akWindow()
+Window::~Window()
 {
     delete mContentView;
+}
+
 }

@@ -1,47 +1,51 @@
 #include <widgettoolkit/mouseevent.h>
 
-akMouseEvent::akMouseEvent()
+namespace Wt {
+
+MouseEvent::MouseEvent()
 {
     SetClassName("akMouseEvent");
-    SetType(akINPUT_EVENT_MOUSE);
+    SetType(WT_INPUT_EVENT_MOUSE);
 }
 
-int akMouseEvent::GetMouseEvent()
+int MouseEvent::GetMouseEvent()
 {
     return mMouseEvent;
 }
 
-int akMouseEvent::GetButton()
+int MouseEvent::GetButton()
 {
     return mButton;
 }
 
-akPoint akMouseEvent::GetLocation()
+Point MouseEvent::GetLocation()
 {
     return mLocation;
 }
 
-akPoint akMouseEvent::GetLocationInWindow()
+Point MouseEvent::GetLocationInWindow()
 {
     return mLocationInWindow;
 }
 
-void akMouseEvent::SetMouseEvent(int mouseEvent)
+void MouseEvent::SetMouseEvent(int mouseEvent)
 {
     mMouseEvent = mouseEvent;
 }
 
-void akMouseEvent::SetButton(int button)
+void MouseEvent::SetButton(int button)
 {
     mButton = button;
 }
 
-void akMouseEvent::SetLocation(akPoint location)
+void MouseEvent::SetLocation(Point location)
 {
     mLocation = location;
 }
 
-void akMouseEvent::SetLocationInWindow(akPoint location)
+void MouseEvent::SetLocationInWindow(Point location)
 {
     mLocationInWindow = location;
+}
+
 }

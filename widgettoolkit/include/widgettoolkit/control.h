@@ -5,13 +5,17 @@
 #include <widgettoolkit/actionreceiver.h>
 #include <vector>
 
-class APPKIT_API akControl : public akView {
+namespace Wt {
+
+class WIDGETTOOLKIT_EXPORT Control : public View {
 public:
-    akControl(akRect rect, akView* parent = NULL);
-    void AddActionReceiver(akActionReceiver* receiver);
-    void RemoveActionReceiver(akActionReceiver* receiver);
-    void InvokeActionReceivers(akControl* sender);
+    Control(Rect rect, View* parent = NULL);
+    void AddActionReceiver(ActionReceiver* receiver);
+    void RemoveActionReceiver(ActionReceiver* receiver);
+    void InvokeActionReceivers(Control* sender);
 
 private:
-    vector<akActionReceiver*> mActionReceivers;
+    vector<ActionReceiver*> mActionReceivers;
 };
+
+}

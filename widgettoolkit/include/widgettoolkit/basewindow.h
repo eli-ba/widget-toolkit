@@ -8,17 +8,19 @@
 #include <widgettoolkit/inputevent.h>
 #include <string>
 
+namespace Wt {
+
 using namespace std;
 
 class BaseWindow {
 public:
-    BaseWindow(akRect contentRect, const string& title, long style);
+    BaseWindow(Rect contentRect, const string& title, long style);
     void SetTitle(const string& title);
-    void SetRect(akRect rect);
-    void SetContentRect(akRect rect);
+    void SetRect(Rect rect);
+    void SetContentRect(Rect rect);
     string GetTitle();
-    akRect GetRect();
-    akRect GetContentRect();
+    Rect GetRect();
+    Rect GetContentRect();
     SDL_Surface* GetSurface();
     SDL_Surface* GetContentSurface();
     void SetActive(bool active);
@@ -31,10 +33,10 @@ public:
     bool IsMaximizable();
     bool IsMinimizable();
     bool IsClosable();
-    akRect GetCloseButtonRect();
-    akRect GetMinimizeButtonRect();
-    akRect GetMaximizeButtonRect();
-    akRect GetTitleBarRect();
+    Rect GetCloseButtonRect();
+    Rect GetMinimizeButtonRect();
+    Rect GetMaximizeButtonRect();
+    Rect GetTitleBarRect();
     int GetRightMargin();
     int GetLeftMargin();
     int GetTopMargin();
@@ -58,8 +60,8 @@ private:
 
 private:
     string mTitle;
-    akRect mRect;
-    akRect mContentRect;
+    Rect mRect;
+    Rect mContentRect;
     int mLeftMargin;
     int mRightMargin;
     int mTopMargin;
@@ -72,16 +74,18 @@ private:
     bool mClosable;
     bool mVisible;
     bool mActive;
-    akRect mCloseButtonRect;
-    akRect mMinimizeButtonRect;
-    akRect mMaximizeButtonRect;
-    akRect mTitleBarRect;
+    Rect mCloseButtonRect;
+    Rect mMinimizeButtonRect;
+    Rect mMaximizeButtonRect;
+    Rect mTitleBarRect;
     bool mMaximized;
     bool mMinimized;
-    akRect mRectBeforeMaximization;
-    akRect mRectBeforeMinimization;
+    Rect mRectBeforeMaximization;
+    Rect mRectBeforeMinimization;
     bool mNeedsToBeClosed;
 
 public:
     void* Window;
 };
+
+}

@@ -3,31 +3,33 @@
 #include <widgettoolkit/resources.h>
 #include <SDL_ttf.h>
 
-akLabel::akLabel(akRect rect, string text, akView* parent /*= NULL*/)
-    : akControl(rect, parent)
+namespace Wt {
+
+Label::Label(Rect rect, string text, View* parent /*= NULL*/)
+    : Control(rect, parent)
 {
     mText = text;
     AddPainter(this);
 }
 
-void akLabel::SetText(string text)
+void Label::SetText(string text)
 {
     mText = text;
     GetWindow()->Repaint();
 }
 
-string akLabel::GetText()
+string Label::GetText()
 {
     return mText;
 }
 
-void akLabel::Paint(akView* view, SDL_Surface* destination)
+void Label::Paint(View* view, SDL_Surface* destination)
 {
     SDL_Color blackColor;
     blackColor.r = blackColor.g = blackColor.b = 0;
     mTextSurface = TTF_RenderText_Blended(Resources::GetFontResource(DEFAULT_FONT), mText.c_str(), blackColor);
 
-    akRect viewRect = GetRect();
+    Rect viewRect = GetRect();
     SDL_Rect dstrect;
     dstrect.x = viewRect.location.x;
     dstrect.y = viewRect.location.y;
@@ -36,4 +38,6 @@ void akLabel::Paint(akView* view, SDL_Surface* destination)
     SDL_BlitSurface(mTextSurface, NULL, destination, &dstrect);
 
     SDL_FreeSurface(mTextSurface);
+}
+
 }

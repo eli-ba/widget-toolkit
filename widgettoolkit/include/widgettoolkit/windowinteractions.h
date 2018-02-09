@@ -3,17 +3,21 @@
 #include <widgettoolkit/inputevent.h>
 #include <widgettoolkit/basewindow.h>
 
+namespace Wt {
+
 class WindowManager;
 
 class WindowInteractions {
 public:
     WindowInteractions(WindowManager* wm);
-    void OnInputEvent(akInputEvent* evt);
+    void OnInputEvent(InputEvent* evt);
     BaseWindow* GetTopLevelWindow();
-    BaseWindow* GetWindowThatContainsPoint(akPoint point);
+    BaseWindow* GetWindowThatContainsPoint(Point point);
 
 public:
     WindowManager* mWindowManager;
     BaseWindow* mTopLevelWindow;
     BaseWindow* mCapturedWindow;
 };
+
+}

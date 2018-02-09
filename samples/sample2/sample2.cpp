@@ -3,11 +3,13 @@
 #include <SDL.h>
 #include <iostream>
 
-class MyPainter : public akPainter {
-    virtual void Paint(akView* view, SDL_Surface* destination)
+using namespace Wt;
+
+class MyPainter : public Painter {
+    virtual void Paint(View* view, SDL_Surface* destination)
     {
         SDL_Rect dstrect;
-        akRect rect = view->GetRect();
+        Rect rect = view->GetRect();
         dstrect.x = rect.location.x;
         dstrect.y = rect.location.y;
         dstrect.w = rect.size.width;
@@ -16,43 +18,43 @@ class MyPainter : public akPainter {
     }
 };
 
-class MyInputEventReceiver : public akMouseEventReceiver {
-    virtual void MousePress(akView* sender, akMouseEvent* event)
+class MyInputEventReceiver : public MouseEventReceiver {
+    virtual void MousePress(View* sender, MouseEvent* event)
     {
         printf("(MyView)MousePress\n");
     }
 
-    virtual void MouseRelease(akView* sender, akMouseEvent* event)
+    virtual void MouseRelease(View* sender, MouseEvent* event)
     {
         printf("(MyView)MouseRelease\n");
     }
 
-    virtual void MouseMove(akView* sender, akMouseEvent* event)
+    virtual void MouseMove(View* sender, MouseEvent* event)
     {
         printf("(MyView)MouseMove\n");
     }
 
-    virtual void MouseDrag(akView* sender, akMouseEvent* event)
+    virtual void MouseDrag(View* sender, MouseEvent* event)
     {
         printf("(MyView)MouseDrag\n");
     }
 
-    virtual void MouseWheelUp(akView* sender, akMouseEvent* event)
+    virtual void MouseWheelUp(View* sender, MouseEvent* event)
     {
         printf("(MyView)MouseWheelUp\n");
     }
 
-    virtual void MouseWheelDown(akView* sender, akMouseEvent* event)
+    virtual void MouseWheelDown(View* sender, MouseEvent* event)
     {
         printf("(MyView)MouseWheelDown\n");
     }
 };
 
-class AnotherPainter : public akPainter {
-    virtual void Paint(akView* view, SDL_Surface* destination)
+class AnotherPainter : public Painter {
+    virtual void Paint(View* view, SDL_Surface* destination)
     {
         SDL_Rect dstrect;
-        akRect rect = view->GetRect();
+        Rect rect = view->GetRect();
         dstrect.x = rect.location.x;
         dstrect.y = rect.location.y;
         dstrect.w = rect.size.width;
@@ -61,75 +63,75 @@ class AnotherPainter : public akPainter {
     }
 };
 
-class AnotherInputEventReceiver : public akMouseEventReceiver, public akKeyEventReceiver {
-    virtual void MousePress(akView* sender, akMouseEvent* event)
+class AnotherInputEventReceiver : public MouseEventReceiver, public KeyEventReceiver {
+    virtual void MousePress(View* sender, MouseEvent* event)
     {
         printf("(AnotherView)MousePress\n");
     }
 
-    virtual void MouseRelease(akView* sender, akMouseEvent* event)
+    virtual void MouseRelease(View* sender, MouseEvent* event)
     {
         printf("(AnotherView)MouseRelease\n");
     }
 
-    virtual void MouseMove(akView* sender, akMouseEvent* event)
+    virtual void MouseMove(View* sender, MouseEvent* event)
     {
         printf("(AnotherView)MouseMove\n");
     }
 
-    virtual void MouseDrag(akView* sender, akMouseEvent* event)
+    virtual void MouseDrag(View* sender, MouseEvent* event)
     {
         printf("(AnotherView)MouseDrag\n");
     }
 
-    virtual void KeyPress(akView* sender, akKeyEvent* event)
+    virtual void KeyPress(View* sender, KeyEvent* event)
     {
         printf("(AnotherView)KeyPress '%d'\n", event->GetKeycode());
     }
 
-    virtual void TextInput(akView* sender, akKeyEvent* event)
+    virtual void TextInput(View* sender, KeyEvent* event)
     {
         printf("(AnotherView)TextInput '%s'\n", event->GetText().c_str());
     }
 
-    virtual void KeyRelease(akView* sender, akKeyEvent* event)
+    virtual void KeyRelease(View* sender, KeyEvent* event)
     {
         printf("(AnotherView)KeyRelease '%d'\n", event->GetKeycode());
     }
 
-    virtual void MouseWheelUp(akView* sender, akMouseEvent* event)
+    virtual void MouseWheelUp(View* sender, MouseEvent* event)
     {
         printf("(AnotherView)MouseWheelUp\n");
     }
 
-    virtual void MouseWheelDown(akView* sender, akMouseEvent* event)
+    virtual void MouseWheelDown(View* sender, MouseEvent* event)
     {
         printf("(AnotherView)MouseWheelDown\n");
     }
 };
 
-class Button1ActionReceiver : public akActionReceiver {
+class Button1ActionReceiver : public ActionReceiver {
 public:
-    virtual void ActionPerformed(akControl* sender)
+    virtual void ActionPerformed(Control* sender)
     {
         //akWindow *wnd = new akWindow(akRect(50,50,200,200), "Another window", akWS_VISIBLE|akWS_CLOSABLE);
-        akMessageBox("Simle title", "Simple Message but very long", NULL);
+        MessageBox("Simle title", "Simple Message but very long", NULL);
     }
 };
 
 int main(int argc, char** argv)
 {
-    akApplication* app = new akApplication("Sample Application");
-    akWindow* wnd = new akWindow(akRect(100, 100, 400, 400), "My Window",
-        akWS_VISIBLE | akWS_CLOSABLE | akWS_MAXIMIZABLE | akWS_MINIMIZABLE);
+    Application* app = new Application("Sample Application");
+    Window* wnd = new Window(Rect(100, 100, 400, 400), "My Window",
+        WT_WS_VISIBLE | WT_WS_CLOSABLE | WT_WS_MAXIMIZABLE | WT_WS_MINIMIZABLE);
 
-    akView* view1 = new akView(akRect(150, 10, 70, 70));
+    View* view1 = new View(Rect(150, 10, 70, 70));
     view1->AddPainter(new MyPainter());
     view1->AddMouseEventReceiver(new MyInputEventReceiver());
     view1->SetTag(1);
     wnd->AddView(view1);
 
-    akView* view2 = new akView(akRect(250, 10, 70, 70));
+    View* view2 = new View(Rect(250, 10, 70, 70));
     view2->AddPainter(new AnotherPainter());
     AnotherInputEventReceiver* view2receiver = new AnotherInputEventReceiver();
     view2->AddMouseEventReceiver(view2receiver);
@@ -137,19 +139,19 @@ int main(int argc, char** argv)
     view2->SetTag(2);
     wnd->AddView(view2);
 
-    akPushButton* button1 = new akPushButton(akRect(30, 30, 80, 35), "Button 1");
+    PushButton* button1 = new PushButton(Rect(30, 30, 80, 35), "Button 1");
     button1->AddActionReceiver(new Button1ActionReceiver());
     wnd->AddView(button1);
 
-    wnd->AddView(new akLabel(akRect(10, 100, 150, 25), "Full Name:"));
-    akTextBox* textbox1 = new akTextBox(akRect(75, 100, 200, 25), "");
+    wnd->AddView(new Label(Rect(10, 100, 150, 25), "Full Name:"));
+    TextBox* textbox1 = new TextBox(Rect(75, 100, 200, 25), "");
     wnd->AddView(textbox1);
 
-    wnd->AddView(new akLabel(akRect(10, 140, 150, 25), "E-mail:"));
-    akTextBox* textbox2 = new akTextBox(akRect(75, 140, 200, 25), "");
+    wnd->AddView(new Label(Rect(10, 140, 150, 25), "E-mail:"));
+    TextBox* textbox2 = new TextBox(Rect(75, 140, 200, 25), "");
     wnd->AddView(textbox2);
 
-    akListBox* listbox1 = new akListBox(akRect(30, 180, 150, 160));
+    ListBox* listbox1 = new ListBox(Rect(30, 180, 150, 160));
     listbox1->AddItem("Apple");
     listbox1->AddItem("Bananas");
     listbox1->AddItem("Cocoa");
@@ -170,20 +172,20 @@ int main(int argc, char** argv)
     listbox1->AddItem("Cocoa");
     wnd->AddView(listbox1);
 
-    akRadioButton* radio1 = new akRadioButton(akRect(250, 150 + 30, 150, 25), "Radio 1");
-    akRadioButton* radio2 = new akRadioButton(akRect(250, 150 + 60, 150, 25), "Radio 2");
-    akRadioButton* radio3 = new akRadioButton(akRect(250, 170 + 90, 150, 25), "Radio 3");
-    akRadioButton* radio4 = new akRadioButton(akRect(250, 170 + 120, 150, 25), "Radio 4");
+    RadioButton* radio1 = new RadioButton(Rect(250, 150 + 30, 150, 25), "Radio 1");
+    RadioButton* radio2 = new RadioButton(Rect(250, 150 + 60, 150, 25), "Radio 2");
+    RadioButton* radio3 = new RadioButton(Rect(250, 170 + 90, 150, 25), "Radio 3");
+    RadioButton* radio4 = new RadioButton(Rect(250, 170 + 120, 150, 25), "Radio 4");
     wnd->AddView(radio1);
     wnd->AddView(radio2);
     wnd->AddView(radio3);
     wnd->AddView(radio4);
 
-    akRadioButtonGroup* group1 = new akRadioButtonGroup;
+    RadioButtonGroup* group1 = new RadioButtonGroup;
     group1->Add(radio1);
     group1->Add(radio2);
 
-    akRadioButtonGroup* group2 = new akRadioButtonGroup;
+    RadioButtonGroup* group2 = new RadioButtonGroup;
     group2->Add(radio3);
     group2->Add(radio4);
 

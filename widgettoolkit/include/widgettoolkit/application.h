@@ -6,14 +6,18 @@
 #include <widgettoolkit/object.h>
 #include <string>
 
+namespace Wt {
+
 using namespace std;
 
-class APPKIT_API akApplication : public akObject {
+class WIDGETTOOLKIT_EXPORT Application : public Object {
 public:
-    akApplication(const string& name);
-    akApplication(akSize size, const string& name);
+    Application(const string& name);
+    Application(Size size, const string& name);
     int Run();
 
 private:
-    void DispatchEvent(akInputEvent* evt);
+    void DispatchEvent(InputEvent* evt);
 };
+
+}

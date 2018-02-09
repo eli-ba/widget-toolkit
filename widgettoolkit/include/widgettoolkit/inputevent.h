@@ -4,20 +4,24 @@
 #include <widgettoolkit/constants.h>
 #include <widgettoolkit/object.h>
 
-class akWindow;
+namespace Wt {
 
-class APPKIT_API akInputEvent : public akObject {
+class Window;
+
+class WIDGETTOOLKIT_EXPORT InputEvent : public Object {
 public:
-    akInputEvent();
-    void SetWindow(akWindow* wnd);
-    akWindow* GetWindow();
+    InputEvent();
+    void SetWindow(Window* wnd);
+    Window* GetWindow();
     void SetType(int type);
     int GetType();
 
 private:
-    akWindow* mWindow;
+    Window* mWindow;
     int mType;
 
 public:
     void* Reserved;
 };
+
+}

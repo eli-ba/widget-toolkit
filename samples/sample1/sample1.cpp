@@ -1,13 +1,13 @@
 #include "sample1.h"
 
 Demo::Demo(const string& name)
-    : akApplication(name)
+    : Application(name)
 {
-    mWnd = new akWindow(akRect(100, 50, 200, 355), "Sample", akWS_CLOSABLE);
+    mWnd = new Window(Rect(100, 50, 200, 355), "Sample", WT_WS_CLOSABLE);
 
-    mTextBox1 = new akTextBox(akRect(20, 20, 150, 25), "");
-    mListBox1 = new akListBox(akRect(20, 50, 150, 200));
-    mButton1 = new akPushButton(akRect(20, 255, 150, 30), "Add");
+    mTextBox1 = new TextBox(Rect(20, 20, 150, 25), "");
+    mListBox1 = new ListBox(Rect(20, 50, 150, 200));
+    mButton1 = new PushButton(Rect(20, 255, 150, 30), "Add");
 
     mButton1->AddActionReceiver(this);
 
@@ -18,7 +18,7 @@ Demo::Demo(const string& name)
     mWnd->SetVisible(true);
 }
 
-void Demo::ActionPerformed(akControl* sender)
+void Demo::ActionPerformed(Control* sender)
 {
     mListBox1->AddItem(mTextBox1->GetText());
 }

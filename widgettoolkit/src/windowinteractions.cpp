@@ -7,6 +7,8 @@
 #include <iostream>
 #include <vector>
 
+namespace Wt {
+
 using namespace std;
 
 WindowInteractions::WindowInteractions(WindowManager* wm)
@@ -15,49 +17,49 @@ WindowInteractions::WindowInteractions(WindowManager* wm)
     mCapturedWindow = NULL;
 }
 
-void WindowInteractions::OnInputEvent(akInputEvent* evt)
+void WindowInteractions::OnInputEvent(InputEvent* evt)
 {
     if (!evt)
         return;
 
-    static akPoint cursorDifference;
+    static Point cursorDifference;
     static bool mustRecalculateCursorDifference = true;
-    akMouseEvent* mouseEvent = NULL;
+    MouseEvent* mouseEvent = NULL;
 
-    if (evt->GetType() == akINPUT_EVENT_MOUSE) {
-        mouseEvent = (akMouseEvent*)evt;
+    if (evt->GetType() == WT_INPUT_EVENT_MOUSE) {
+        mouseEvent = (MouseEvent*)evt;
 
         BaseWindow* baseWnd = this->GetWindowThatContainsPoint(mouseEvent->GetLocation());
         if (baseWnd) {
-            if (mouseEvent->GetMouseEvent() == akMOUSE_EVENT_DRAG) {
+            if (mouseEvent->GetMouseEvent() == WT_MOUSE_EVENT_DRAG) {
                 if (!mCapturedWindow) {
                     mCapturedWindow = baseWnd;
                 }
 
                 if (!mCapturedWindow->IsMaximized()) {
                     if (Utility::RectContainsPoint(mCapturedWindow->GetTitleBarRect(), mouseEvent->GetLocation())) {
-                        akRect wndRect = mCapturedWindow->GetRect();
+                        Rect wndRect = mCapturedWindow->GetRect();
                         if (mustRecalculateCursorDifference) {
                             cursorDifference.x = mouseEvent->GetLocation().x - wndRect.location.x;
                             cursorDifference.y = mouseEvent->GetLocation().y - wndRect.location.y;
                             mustRecalculateCursorDifference = false;
                         }
-                        akPoint newLocation;
+                        Point newLocation;
                         newLocation.x = mouseEvent->GetLocation().x - cursorDifference.x;
                         newLocation.y = mouseEvent->GetLocation().y - cursorDifference.y;
-                        mCapturedWindow->SetRect(akRect(newLocation, wndRect.size));
+                        mCapturedWindow->SetRect(Rect(newLocation, wndRect.size));
                         return;
                     }
                 }
             }
-            else if (mouseEvent->GetMouseEvent() == akMOUSE_EVENT_PRESS) {
+            else if (mouseEvent->GetMouseEvent() == WT_MOUSE_EVENT_PRESS) {
                 if (baseWnd != GetTopLevelWindow()) {
                     mWindowManager->RemoveWindow(baseWnd);
                     mWindowManager->AddWindow(baseWnd);
                     mWindowManager->ComposeWindows();
                 }
             }
-            else if (mouseEvent->GetMouseEvent() == akMOUSE_EVENT_RELEASE) {
+            else if (mouseEvent->GetMouseEvent() == WT_MOUSE_EVENT_RELEASE) {
                 if (mCapturedWindow)
                     mCapturedWindow = NULL;
 
@@ -100,7 +102,7 @@ BaseWindow* WindowInteractions::GetTopLevelWindow()
     return mWindowManager->GetWindows().back();
 }
 
-BaseWindow* WindowInteractions::GetWindowThatContainsPoint(akPoint point)
+BaseWindow* WindowInteractions::GetWindowThatContainsPoint(Point point)
 {
     if (mWindowManager->GetWindows().size() == 0)
         return NULL;
@@ -109,9 +111,11 @@ BaseWindow* WindowInteractions::GetWindowThatContainsPoint(akPoint point)
     int windowCount = windows.size();
     for (int i = windowCount - 1; i >= 0; i--) {
         BaseWindow* wnd = windows.at(i);
-        akRect wndRect = wnd->GetRect();
+        Rect wndRect = wnd->GetRect();
         if (Utility::RectContainsPoint(wndRect, point))
             return wnd;
     }
     return NULL;
+}
+
 }

@@ -4,17 +4,19 @@
 #include <widgettoolkit/utility.h>
 #include <iostream>
 
-akColor akView::mFocusColor = akColor(153, 217, 234, 0);
-akColor akView::mLostFocusColor = akColor(255, 255, 255, 0);
+namespace Wt {
 
-akView::akView()
+Color View::mFocusColor = Color(153, 217, 234, 0);
+Color View::mLostFocusColor = Color(255, 255, 255, 0);
+
+View::View()
 {
     SetClassName("akView");
-    mRect = akRect(0, 0, 0, 0);
+    mRect = Rect(0, 0, 0, 0);
     mParent = NULL;
 }
 
-akView::akView(akRect rect, akView* parent /* = NULL*/)
+View::View(Rect rect, View* parent /* = NULL*/)
 {
     mRect = rect;
     mParent = parent;
@@ -22,47 +24,47 @@ akView::akView(akRect rect, akView* parent /* = NULL*/)
         mParent->AddChild(this);
 }
 
-void akView::SetRect(akRect rect)
+void View::SetRect(Rect rect)
 {
     mRect = rect;
     Repaint();
 }
 
-akRect akView::GetRect()
+Rect View::GetRect()
 {
     return mRect;
 }
 
-akColor akView::GetFocusColor()
+Color View::GetFocusColor()
 {
     return mFocusColor;
 }
 
-akColor akView::GetLostFocusColor()
+Color View::GetLostFocusColor()
 {
     return mLostFocusColor;
 }
 
-void akView::SetFocusColor(akColor c)
+void View::SetFocusColor(Color c)
 {
     mFocusColor = c;
 }
 
-void akView::SetLostFocusColor(akColor c)
+void View::SetLostFocusColor(Color c)
 {
     mLostFocusColor = c;
 }
 
-void akView::AddChild(akView* view)
+void View::AddChild(View* view)
 {
     mChildren.push_back(view);
     view->SetWindow(mWindow);
 }
 
-akView* akView::RemoveChild(akView* view)
+View* View::RemoveChild(View* view)
 {
     for (unsigned int i = 0; i < mChildren.size(); i++) {
-        akView* viewToRemove = mChildren.at(i);
+        View* viewToRemove = mChildren.at(i);
         if (view == viewToRemove) {
             mChildren.erase(mChildren.begin() + i);
             viewToRemove->SetWindow(NULL);
@@ -72,17 +74,17 @@ akView* akView::RemoveChild(akView* view)
     return NULL;
 }
 
-akWindow* akView::GetWindow()
+Window* View::GetWindow()
 {
     return mWindow;
 }
 
-void akView::SetWindow(akWindow* wnd)
+void View::SetWindow(Window* wnd)
 {
     mWindow = wnd;
 }
 
-void akView::Repaint()
+void View::Repaint()
 {
     if (!mWindow)
         return;
@@ -92,20 +94,20 @@ void akView::Repaint()
     SDL_Surface* destination = baseWnd->GetContentSurface();
 
     for (unsigned int i = 0; i < mPainters.size(); i++) {
-        akPainter* painter = mPainters.at(i);
+        Painter* painter = mPainters.at(i);
         painter->Paint(this, destination);
     }
 
     for (unsigned int i = 0; i < mChildren.size(); i++) {
-        akView* child = mChildren.at(i);
+        View* child = mChildren.at(i);
         child->Repaint();
     }
 }
 
-bool akView::SendInputEvent(akInputEvent* evt)
+bool View::SendInputEvent(InputEvent* evt)
 {
-    if (evt->GetType() == akINPUT_EVENT_KEY) {
-        akKeyEvent* keyEvent = (akKeyEvent*)evt;
+    if (evt->GetType() == WT_INPUT_EVENT_KEY) {
+        KeyEvent* keyEvent = (KeyEvent*)evt;
 
         if (mWindow->GetFirstResponder() == this) {
             InvokeKeyEventReceivers(keyEvent);
@@ -113,21 +115,21 @@ bool akView::SendInputEvent(akInputEvent* evt)
 
         // Send the event to children
         for (unsigned int i = 0; i < mChildren.size(); i++) {
-            akView* child = mChildren.at(i);
+            View* child = mChildren.at(i);
             child->SendInputEvent(evt);
         }
 
         return true;
     }
-    else if (evt->GetType() == akINPUT_EVENT_MOUSE) {
-        akMouseEvent* mouseEvent = (akMouseEvent*)evt;
+    else if (evt->GetType() == WT_INPUT_EVENT_MOUSE) {
+        MouseEvent* mouseEvent = (MouseEvent*)evt;
         if (Utility::RectContainsPoint(mRect, mouseEvent->GetLocationInWindow())) {
             // Call mouse event receivers
             InvokeMouseEventReceivers(mouseEvent);
 
             // Send the event to children
             for (unsigned int i = 0; i < mChildren.size(); i++) {
-                akView* child = mChildren.at(i);
+                View* child = mChildren.at(i);
                 child->SendInputEvent(evt);
             }
             return true;
@@ -138,15 +140,15 @@ bool akView::SendInputEvent(akInputEvent* evt)
     return false;
 }
 
-void akView::AddPainter(akPainter* painter)
+void View::AddPainter(Painter* painter)
 {
     mPainters.push_back(painter);
 }
 
-void akView::RemovePainter(akPainter* painter)
+void View::RemovePainter(Painter* painter)
 {
     for (unsigned int i = 0; i < mPainters.size(); i++) {
-        akPainter* painterToRemove = mPainters.at(i);
+        Painter* painterToRemove = mPainters.at(i);
         if (painterToRemove == painter) {
             mPainters.erase(mPainters.begin() + i);
             return;
@@ -154,15 +156,15 @@ void akView::RemovePainter(akPainter* painter)
     }
 }
 
-void akView::AddKeyEventReceiver(akKeyEventReceiver* receiver)
+void View::AddKeyEventReceiver(KeyEventReceiver* receiver)
 {
     this->mKeyEventReceivers.push_back(receiver);
 }
 
-void akView::RemoveKeyEventReceiver(akKeyEventReceiver* receiver)
+void View::RemoveKeyEventReceiver(KeyEventReceiver* receiver)
 {
     for (unsigned int i = 0; i < mKeyEventReceivers.size(); i++) {
-        akKeyEventReceiver* rcv = mKeyEventReceivers.at(i);
+        KeyEventReceiver* rcv = mKeyEventReceivers.at(i);
         if (rcv == receiver) {
             mKeyEventReceivers.erase(mKeyEventReceivers.begin() + i);
             return;
@@ -170,15 +172,15 @@ void akView::RemoveKeyEventReceiver(akKeyEventReceiver* receiver)
     }
 }
 
-void akView::AddMouseEventReceiver(akMouseEventReceiver* receiver)
+void View::AddMouseEventReceiver(MouseEventReceiver* receiver)
 {
     this->mMouseEventReceivers.push_back(receiver);
 }
 
-void akView::RemoveMouseEventReceiver(akMouseEventReceiver* receiver)
+void View::RemoveMouseEventReceiver(MouseEventReceiver* receiver)
 {
     for (unsigned int i = 0; i < mMouseEventReceivers.size(); i++) {
-        akMouseEventReceiver* rcv = mMouseEventReceivers.at(i);
+        MouseEventReceiver* rcv = mMouseEventReceivers.at(i);
         if (rcv == receiver) {
             mMouseEventReceivers.erase(mMouseEventReceivers.begin() + i);
             return;
@@ -186,15 +188,15 @@ void akView::RemoveMouseEventReceiver(akMouseEventReceiver* receiver)
     }
 }
 
-void akView::AddViewNotificationReceiver(akViewNotificationReceiver* receiver)
+void View::AddViewNotificationReceiver(ViewNotificationReceiver* receiver)
 {
     this->mViewNotificationReceivers.push_back(receiver);
 }
 
-void akView::RemoveViewNotificationReceiver(akViewNotificationReceiver* receiver)
+void View::RemoveViewNotificationReceiver(ViewNotificationReceiver* receiver)
 {
     for (unsigned int i = 0; i < mViewNotificationReceivers.size(); i++) {
-        akViewNotificationReceiver* rcv = mViewNotificationReceivers.at(i);
+        ViewNotificationReceiver* rcv = mViewNotificationReceivers.at(i);
         if (rcv == receiver) {
             mViewNotificationReceivers.erase(mViewNotificationReceivers.begin() + i);
             return;
@@ -202,42 +204,42 @@ void akView::RemoveViewNotificationReceiver(akViewNotificationReceiver* receiver
     }
 }
 
-void akView::InvokeKeyEventReceivers(akKeyEvent* event)
+void View::InvokeKeyEventReceivers(KeyEvent* event)
 {
     for (unsigned int i = 0; i < mKeyEventReceivers.size(); i++) {
-        akKeyEventReceiver* rcv = mKeyEventReceivers.at(i);
-        if (event->GetKeyEvent() == akKEY_EVENT_PRESS)
+        KeyEventReceiver* rcv = mKeyEventReceivers.at(i);
+        if (event->GetKeyEvent() == WT_KEY_EVENT_PRESS)
             rcv->KeyPress(this, event);
-        else if (event->GetKeyEvent() == akKEY_EVENT_RELEASE)
+        else if (event->GetKeyEvent() == WT_KEY_EVENT_RELEASE)
             rcv->KeyRelease(this, event);
-        else if (event->GetKeyEvent() == akKEY_EVENT_TEXT)
+        else if (event->GetKeyEvent() == WT_KEY_EVENT_TEXT)
             rcv->TextInput(this, event);
     }
 }
 
-void akView::InvokeMouseEventReceivers(akMouseEvent* event)
+void View::InvokeMouseEventReceivers(MouseEvent* event)
 {
     for (unsigned int i = 0; i < mMouseEventReceivers.size(); i++) {
-        akMouseEventReceiver* rcv = mMouseEventReceivers.at(i);
-        if (event->GetMouseEvent() == akMOUSE_EVENT_PRESS)
+        MouseEventReceiver* rcv = mMouseEventReceivers.at(i);
+        if (event->GetMouseEvent() == WT_MOUSE_EVENT_PRESS)
             rcv->MousePress(this, event);
-        else if (event->GetMouseEvent() == akMOUSE_EVENT_RELEASE)
+        else if (event->GetMouseEvent() == WT_MOUSE_EVENT_RELEASE)
             rcv->MouseRelease(this, event);
-        else if (event->GetMouseEvent() == akMOUSE_EVENT_MOVE)
+        else if (event->GetMouseEvent() == WT_MOUSE_EVENT_MOVE)
             rcv->MouseMove(this, event);
-        else if (event->GetMouseEvent() == akMOUSE_EVENT_DRAG)
+        else if (event->GetMouseEvent() == WT_MOUSE_EVENT_DRAG)
             rcv->MouseDrag(this, event);
-        else if (event->GetMouseEvent() == akMOUSE_EVENT_WHEEL_UP)
+        else if (event->GetMouseEvent() == WT_MOUSE_EVENT_WHEEL_UP)
             rcv->MouseWheelUp(this, event);
-        else if (event->GetMouseEvent() == akMOUSE_EVENT_WHEEL_DOWN)
+        else if (event->GetMouseEvent() == WT_MOUSE_EVENT_WHEEL_DOWN)
             rcv->MouseWheelDown(this, event);
     }
 }
 
-void akView::InvokeViewNotificationEventReceivers(int notification)
+void View::InvokeViewNotificationEventReceivers(int notification)
 {
     for (int i = 0; i < mViewNotificationReceivers.size(); i++) {
-        akViewNotificationReceiver* rcv = mViewNotificationReceivers.at(i);
+        ViewNotificationReceiver* rcv = mViewNotificationReceivers.at(i);
         if (notification == akVIEW_WILL_BECAME_FIRSTRESPONDER)
             rcv->ViewWillBecameFirstResponder();
         else if (notification == akVIEW_WILL_RESIGN_FIRSTRESPONDER)
@@ -245,17 +247,19 @@ void akView::InvokeViewNotificationEventReceivers(int notification)
     }
 }
 
-void akView::SetTag(int tag)
+void View::SetTag(int tag)
 {
     mTag = tag;
 }
 
-int akView::GetTag()
+int View::GetTag()
 {
     return mTag;
 }
 
-akView::~akView()
+View::~View()
 {
     mChildren.clear();
+}
+
 }

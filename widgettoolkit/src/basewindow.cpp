@@ -7,9 +7,11 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 
+namespace Wt {
+
 extern WindowManager* TheWindowManager;
 
-BaseWindow::BaseWindow(akRect contentRect, const string& title, long style = 0)
+BaseWindow::BaseWindow(Rect contentRect, const string& title, long style = 0)
 {
     mNeedsToBeClosed = false;
 
@@ -96,11 +98,11 @@ void BaseWindow::CalculateMargins()
 void BaseWindow::SetActive(bool active)
 {
     if (!active) {
-        mStyle = mStyle ^ akWS_ACTIVE;
+        mStyle = mStyle ^ WT_WS_ACTIVE;
         mActive = false;
     }
     else {
-        mStyle = mStyle | akWS_ACTIVE;
+        mStyle = mStyle | WT_WS_ACTIVE;
         mActive = true;
     }
 
@@ -113,11 +115,11 @@ void BaseWindow::SetActive(bool active)
 void BaseWindow::SetVisible(bool visible)
 {
     if (!visible) {
-        mStyle = mStyle ^ akWS_VISIBLE;
+        mStyle = mStyle ^ WT_WS_VISIBLE;
         mVisible = false;
     }
     else {
-        mStyle = mStyle | akWS_VISIBLE;
+        mStyle = mStyle | WT_WS_VISIBLE;
         mVisible = true;
     }
 
@@ -129,11 +131,11 @@ void BaseWindow::SetVisible(bool visible)
 void BaseWindow::SetMaximizable(bool maximizable)
 {
     if (!maximizable) {
-        mStyle = mStyle ^ akWS_MAXIMIZABLE;
+        mStyle = mStyle ^ WT_WS_MAXIMIZABLE;
         mMaximizable = false;
     }
     else {
-        mStyle = mStyle | akWS_MAXIMIZABLE;
+        mStyle = mStyle | WT_WS_MAXIMIZABLE;
         mMaximizable = true;
     }
 
@@ -146,11 +148,11 @@ void BaseWindow::SetMaximizable(bool maximizable)
 void BaseWindow::SetMinimizable(bool minimizable)
 {
     if (!minimizable) {
-        mStyle = mStyle ^ akWS_MINIMIZABLE;
+        mStyle = mStyle ^ WT_WS_MINIMIZABLE;
         mMinimizable = false;
     }
     else {
-        mStyle = mStyle | akWS_MINIMIZABLE;
+        mStyle = mStyle | WT_WS_MINIMIZABLE;
         mMinimizable = true;
     }
 
@@ -163,11 +165,11 @@ void BaseWindow::SetMinimizable(bool minimizable)
 void BaseWindow::SetClosable(bool closable)
 {
     if (!closable) {
-        mStyle = mStyle ^ akWS_CLOSABLE;
+        mStyle = mStyle ^ WT_WS_CLOSABLE;
         mClosable = false;
     }
     else {
-        mStyle = mStyle | akWS_CLOSABLE;
+        mStyle = mStyle | WT_WS_CLOSABLE;
         mClosable = true;
     }
 
@@ -308,7 +310,7 @@ void BaseWindow::DrawDecoration()
     SDL_BlitSurface(titleSurface, NULL, mSurface, &dstrect);
 
     /* Buttons */
-    akRect firstRect, secondRect;
+    Rect firstRect, secondRect;
     int topSpacing = 4, rightSpacing = 7, horizontalSpacing = 2;
     SDL_Surface* currentSurface = NULL;
 
@@ -364,22 +366,22 @@ void BaseWindow::DrawContentSurface()
     SDL_BlitSurface(mContentSurface, NULL, mSurface, &dstrect);
 }
 
-akRect BaseWindow::GetCloseButtonRect()
+Rect BaseWindow::GetCloseButtonRect()
 {
     return mCloseButtonRect;
 }
 
-akRect BaseWindow::GetMinimizeButtonRect()
+Rect BaseWindow::GetMinimizeButtonRect()
 {
     return mMinimizeButtonRect;
 }
 
-akRect BaseWindow::GetMaximizeButtonRect()
+Rect BaseWindow::GetMaximizeButtonRect()
 {
     return mMaximizeButtonRect;
 }
 
-akRect BaseWindow::GetTitleBarRect()
+Rect BaseWindow::GetTitleBarRect()
 {
     return mTitleBarRect;
 }
@@ -428,9 +430,9 @@ void BaseWindow::CalculateDecorationsMetrics()
     mMinimizeButtonRect.size.height = minimizeButton->h;
 }
 
-void BaseWindow::SetRect(akRect rect)
+void BaseWindow::SetRect(Rect rect)
 {
-    akRect oldRect = mRect;
+    Rect oldRect = mRect;
     mRect = rect;
 
     /* Recalculate the new content rect */
@@ -446,7 +448,7 @@ void BaseWindow::SetRect(akRect rect)
         CreateSurface();
         DrawDecoration();
         if (this->Window) {
-            akWindow* wnd = (akWindow*)this->Window;
+            Wt::Window* wnd = (Wt::Window*)this->Window;
             wnd->Repaint();
         }
     }
@@ -462,9 +464,9 @@ void BaseWindow::DispatchInputEvent(akInputEvent *evt)
 }
 */
 
-void BaseWindow::SetContentRect(akRect rect)
+void BaseWindow::SetContentRect(Rect rect)
 {
-    akRect oldRect = mContentRect;
+    Rect oldRect = mContentRect;
     mContentRect = rect;
     if (mSurface) {
         TheWindowManager->ComposeWindows();
@@ -482,7 +484,7 @@ void BaseWindow::SetContentRect(akRect rect)
         CreateSurface();
         DrawDecoration();
         if (this->Window) {
-            akWindow* wnd = (akWindow*)this->Window;
+			Wt::Window* wnd = (Wt::Window*)this->Window;
             wnd->Repaint();
         }
     }
@@ -493,12 +495,12 @@ string BaseWindow::GetTitle()
     return mTitle;
 }
 
-akRect BaseWindow::GetRect()
+Rect BaseWindow::GetRect()
 {
     return mRect;
 }
 
-akRect BaseWindow::GetContentRect()
+Rect BaseWindow::GetContentRect()
 {
     return mContentRect;
 }
@@ -549,7 +551,7 @@ void BaseWindow::SetMaximized(bool maximize)
         if (mMaximized)
             return;
         mRectBeforeMaximization = mRect;
-        SetRect(akRect(akPoint(0, 0), TheWindowManager->GetResolution()));
+        SetRect(Rect(Point(0, 0), TheWindowManager->GetResolution()));
         mMaximized = true;
     }
     else {
@@ -566,7 +568,7 @@ void BaseWindow::SetMinimized(bool minimize)
         if (mMinimized)
             return;
         mRectBeforeMinimization = mRect;
-        SetRect(akRect(mRectBeforeMinimization.location.x, mRectBeforeMinimization.location.y, 200 + mLeftMargin + mRightMargin, mTopMargin + mBottomMargin));
+        SetRect(Rect(mRectBeforeMinimization.location.x, mRectBeforeMinimization.location.y, 200 + mLeftMargin + mRightMargin, mTopMargin + mBottomMargin));
         mMinimized = true;
     }
     else {
@@ -593,4 +595,6 @@ BaseWindow::~BaseWindow()
         SDL_FreeSurface(mSurface);
     if (mContentSurface)
         SDL_FreeSurface(mContentSurface);
+}
+
 }

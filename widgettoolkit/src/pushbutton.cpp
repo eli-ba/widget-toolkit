@@ -7,13 +7,15 @@
 #include <windows.h>
 #endif
 
-enum _akButtonState {
+namespace Wt {
+
+enum ButtonState {
     RELEASED_PUSHBUTTON,
     PRESSED_PUSHBUTTON
 };
 
-akPushButton::akPushButton(akRect rect, string text, akView* parent)
-    : akControl(rect, parent)
+PushButton::PushButton(Rect rect, string text, View* parent)
+    : Control(rect, parent)
 {
     SetClassName("akPushButton");
     mText = text;
@@ -22,48 +24,48 @@ akPushButton::akPushButton(akRect rect, string text, akView* parent)
     AddMouseEventReceiver(this);
 }
 
-string akPushButton::GetText()
+string PushButton::GetText()
 {
     return mText;
 }
 
-void akPushButton::SetText(string text)
+void PushButton::SetText(string text)
 {
     mText = text;
     GetWindow()->Repaint();
 }
 
-void akPushButton::MousePress(akView* sender, akMouseEvent* event)
+void PushButton::MousePress(View* sender, MouseEvent* event)
 {
     GetWindow()->SetFirstResponder(this);
     mButtonState = PRESSED_PUSHBUTTON;
     GetWindow()->Repaint();
 }
 
-void akPushButton::MouseRelease(akView* sender, akMouseEvent* event)
+void PushButton::MouseRelease(View* sender, MouseEvent* event)
 {
     InvokeActionReceivers(this);
     mButtonState = RELEASED_PUSHBUTTON;
     GetWindow()->Repaint();
 }
 
-void akPushButton::MouseMove(akView* sender, akMouseEvent* event)
+void PushButton::MouseMove(View* sender, MouseEvent* event)
 {
 }
 
-void akPushButton::MouseDrag(akView* sender, akMouseEvent* event)
+void PushButton::MouseDrag(View* sender, MouseEvent* event)
 {
 }
 
-void akPushButton::MouseWheelUp(akView* sender, akMouseEvent* event)
+void PushButton::MouseWheelUp(View* sender, MouseEvent* event)
 {
 }
 
-void akPushButton::MouseWheelDown(akView* sender, akMouseEvent* event)
+void PushButton::MouseWheelDown(View* sender, MouseEvent* event)
 {
 }
 
-void akPushButton::Paint(akView* view, SDL_Surface* destination)
+void PushButton::Paint(View* view, SDL_Surface* destination)
 {
     SDL_Color black_color = { 0, 0, 0 };
     SDL_Surface *surf = NULL, *text = NULL, *img = NULL;
@@ -71,7 +73,7 @@ void akPushButton::Paint(akView* view, SDL_Surface* destination)
     SDL_Surface* pushbutton_pressed = Resources::GetImageResource(PUSHBUTTON_PRESSED);
 
     /* Parameters */
-    akRect viewRect = GetRect();
+    Rect viewRect = GetRect();
     int x = viewRect.location.x;
     int y = viewRect.location.y;
     int width = viewRect.size.width;
@@ -142,4 +144,6 @@ void akPushButton::Paint(akView* view, SDL_Surface* destination)
 
     SDL_FreeSurface(text);
     SDL_FreeSurface(surf);
+}
+
 }
