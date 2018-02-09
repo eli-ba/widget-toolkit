@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <widgettoolkit/widgettoolkit.h>
+#include <SDL.h>
 #include <iostream>
 
 class MyPainter : public akPainter {
