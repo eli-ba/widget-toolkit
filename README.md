@@ -1,2 +1,2 @@
-# Widget Toolkit - C/C++, SDL based
+# C/C++ Widget Toolkit
 ![](./docs/screenshot.png)
